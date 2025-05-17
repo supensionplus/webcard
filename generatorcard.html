@@ -71,6 +71,10 @@
     }
 
     /* Estilo de secciones */
+    .seccion-sencilla {
+      margin-bottom: 25px; /* separación entre secciones */
+    }
+
     .seccion-sencilla summary {
       background-color: var(--color-fondo-barra, #007bff);
       color: var(--color-texto-barra, #fff);
@@ -89,7 +93,7 @@
       padding: 10px;
       border-radius: 0 0 5px 5px;
       margin-bottom: 15px;
-      border-top: 1px solid #ffffff; /* Línea blanca entre secciones */
+      border-top: 1px solid #ffffff;
     }
 
     .seccion-sencilla img {
@@ -175,7 +179,6 @@
   <button onclick="copiarCodigo()">📋 Copiar código HTML</button>
 
   <script>
-    // Función para actualizar las variables CSS según colores seleccionados
     function actualizarColores() {
       const fondoBarra = document.getElementById('colorFondoBarra').value;
       const textoBarra = document.getElementById('colorTextoBarra').value;
@@ -186,18 +189,17 @@
       document.documentElement.style.setProperty('--color-fondo-parrafo', fondoParrafo);
     }
 
-    // Ejecutar actualización de colores al cambiar inputs
     document.getElementById('colorFondoBarra').addEventListener('input', generarHTML);
     document.getElementById('colorTextoBarra').addEventListener('input', generarHTML);
     document.getElementById('colorFondoParrafo').addEventListener('input', generarHTML);
 
-    // Función para generar HTML y vista previa
     function generarHTML() {
       actualizarColores();
 
       const texto = document.getElementById("entrada").value;
       const secciones = texto.split("&&").filter(s => s.trim() !== "");
       let resultado = `<style>
+.seccion-sencilla { margin-bottom: 25px; }
 .seccion-sencilla summary {
   background-color: var(--color-fondo-barra, #007bff);
   color: var(--color-texto-barra, #fff);
@@ -248,7 +250,6 @@
       document.getElementById("codigoGenerado").textContent = resultado.trim();
       document.getElementById("vistaPrevia").innerHTML = vistaHTML;
 
-      // Añadir comportamiento para cerrar otras secciones abiertas
       const todos = document.querySelectorAll(".preview details");
       todos.forEach(det => {
         det.addEventListener("toggle", function () {
