@@ -2,259 +2,166 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Convertidor de Texto a Secciones HTML</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generador Html Completo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px auto;
-      max-width: 900px;
-      padding: 10px;
-      background-color: #e6f2ff;
+      background-color: #eaf4ff;
       text-align: center;
-    }
-
-    h1 {
-      color: #333;
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 20px;
+      font-size: 18px;
     }
 
     h2 {
-      font-size: 22px;
-      color: #222;
+      color: #000;
+      margin-top: 30px;
     }
 
     h3 {
-      font-size: 18px;
       font-weight: normal;
-    }
-
-    .ejemplo, .preview, .output, .paletas {
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 20px auto;
-      text-align: left;
+      color: #333;
     }
 
     textarea {
       width: 100%;
-      height: 180px;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      height: 120px;
       resize: vertical;
+      font-family: monospace;
+      font-size: 16px;
+      margin-bottom: 20px;
     }
 
-    button {
+    .boton {
       background-color: #007bff;
       color: white;
       padding: 10px 20px;
-      font-size: 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      margin: 10px 5px;
+      margin: 10px;
+      font-size: 16px;
     }
 
-    button:hover {
+    .boton:hover {
       background-color: #0056b3;
     }
 
-    .seccion-sencilla {
-      margin-bottom: 15px;
+    .seccion {
+      margin: 15px 0;
     }
 
-    .seccion-sencilla summary {
-      background-color: var(--color-fondo-barra, #007bff);
-      color: var(--color-texto-barra, #fff);
-      padding: 10px;
-      font-size: 20px;
-      border-radius: 5px;
-      cursor: pointer;
+    .acordeon {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      width: 100%;
+      border: none;
       text-align: left;
-    }
-
-    .seccion-sencilla details[open] summary {
-      border-bottom: 1px solid #ccc;
-    }
-
-    .seccion-sencilla .contenido {
-      background-color: var(--color-fondo-parrafo, #ffffff);
-      padding: 10px;
-      border-radius: 0 0 5px 5px;
-      border-top: 1px solid #eee;
-    }
-
-    .seccion-sencilla img {
-      max-width: 100%;
-      height: auto;
-      margin: 10px 0;
-      border-radius: 8px;
-    }
-
-    .paletas {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .color-label {
+      font-size: 18px;
+      font-weight: bold;
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 14px;
-      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
     }
 
-    .color-label input[type="color"] {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    .contenido {
+      display: none;
+      background-color: white;
+      padding: 15px;
+      border-radius: 0 0 8px 8px;
+      text-align: center;
     }
 
-    .output {
-      max-height: 120px;
-      overflow: auto;
-      white-space: pre-wrap;
+    .icono {
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>🔧 Convertidor de Texto a Secciones HTML</h1>
+  <h2>🚀 Generador Secciones</h2>
+  <textarea id="entrada" placeholder="Escribe aquí tus secciones, una por línea..."></textarea><br>
+  <button class="boton" onclick="generarSecciones()">Generar Secciones</button>
 
-  <div class="ejemplo">
-    <strong>📝 Ejemplo del formato de entrada:</strong><br><br>
-    <code>
-      && ¿Qué es la inteligencia artificial?<br>
-      https://i.blogs.es/c301a9/dibujo-por-ia/1200_800.jpeg<br>
-      La inteligencia artificial (IA) se refiere a sistemas que imitan la inteligencia humana para realizar tareas y mejorar con los datos.<br><br>
-      - IA basada en reglas<br>
-      - Aprendizaje automático<br>
-      - Redes neuronales
-    </code>
-  </div>
-
-  <div class="paletas">
-    <label class="color-label">Fondo Sección:
-      <input type="color" id="colorFondoBarra" value="#007bff">
-    </label>
-    <label class="color-label">Texto Sección:
-      <input type="color" id="colorTextoBarra" value="#ffffff">
-    </label>
-    <label class="color-label">Fondo Párrafos:
-      <input type="color" id="colorFondoParrafo" value="#ffffff">
-    </label>
-  </div>
-
-  <h2>✏️ Texto a Convertir</h2>
-  <textarea id="entrada" placeholder="Pega aquí el texto con '&&' al inicio de cada título..."></textarea>
-  <br>
-  <button onclick="generarHTML()">🚀 Generar Secciones</button>
-
-  <h2>📂 Vista Previa</h2>
-  <div class="preview" id="vistaPrevia"></div>
+  <h2>📁 Vista Previa</h2>
+  <div id="vistaPrevia"></div>
 
   <h2>💻 Código HTML Completo</h2>
-  <div class="output" id="codigoGenerado"></div>
-
-  <div>
-    <button onclick="copiarCodigo()">📋 Copiar código HTML</button>
-    <button onclick="reiniciarPagina()">🔄 Crear nuevo código</button>
-  </div>
+  <textarea id="codigoGenerado" rows="5" readonly></textarea><br>
+  <button class="boton" onclick="copiarCodigo()">📋 Copiar código HTML</button>
+  <br>
+  <button class="boton" onclick="reiniciarPagina()">🔄 Crear nuevo código</button>
 
   <script>
-    function actualizarColores() {
-      const fondoBarra = document.getElementById('colorFondoBarra').value;
-      const textoBarra = document.getElementById('colorTextoBarra').value;
-      const fondoParrafo = document.getElementById('colorFondoParrafo').value;
+    function generarSecciones() {
+      const entrada = document.getElementById("entrada").value.trim().split("\n");
+      let vistaHTML = '';
+      let htmlFinal = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página Generada</title>
+<style>
+body { font-family: Arial, sans-serif; text-align: center; margin: 0 auto; max-width: 800px; background-color: #f4f8ff; padding: 20px; font-size: 18px; }
+h2 { color: #fff; margin: 0; font-size: 20px; }
+h3 { font-weight: normal; color: #222; }
+button.acordeon { background-color: #007bff; color: white; padding: 20px; width: 100%; text-align: left; font-size: 18px; border: none; cursor: pointer; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+.contenido { display: none; padding: 15px; background-color: white; border-radius: 0 0 8px 8px; }
+</style>
+</head>
+<body>\n`;
 
-      document.documentElement.style.setProperty('--color-fondo-barra', fondoBarra);
-      document.documentElement.style.setProperty('--color-texto-barra', textoBarra);
-      document.documentElement.style.setProperty('--color-fondo-parrafo', fondoParrafo);
-    }
+      entrada.forEach((linea, index) => {
+        const numero = index + 1;
+        const id = `seccion${numero}`;
+        const titulo = linea.trim();
+        const contenido = `Contenido para "${titulo}"`;
 
-    document.getElementById('colorFondoBarra').addEventListener('input', generarHTML);
-    document.getElementById('colorTextoBarra').addEventListener('input', generarHTML);
-    document.getElementById('colorFondoParrafo').addEventListener('input', generarHTML);
+        const bloque = `
+<button class="acordeon" onclick="toggleSeccion('${id}', this)">
+  <span class="icono">▶</span> <h2>${numero}) ${titulo}</h2>
+</button>
+<div id="${id}" class="contenido">
+  <h3>${contenido}</h3>
+</div>\n`;
 
-    function generarHTML() {
-      actualizarColores();
-
-      const texto = document.getElementById("entrada").value;
-      const secciones = texto.split("&&").filter(s => s.trim() !== "");
-      let resultado = `<style>
-.seccion-sencilla summary {
-  background-color: var(--color-fondo-barra, #007bff);
-  color: var(--color-texto-barra, #fff);
-  padding: 10px;
-  font-size: 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  text-align: left;
-}
-.seccion-sencilla details[open] summary {
-  border-bottom: 1px solid #ccc;
-}
-.seccion-sencilla .contenido {
-  background-color: var(--color-fondo-parrafo, #ffffff);
-  padding: 10px;
-  border-radius: 0 0 5px 5px;
-  border-top: 1px solid #eee;
-}
-.seccion-sencilla img {
-  max-width: 100%;
-  height: auto;
-  margin: 10px 0;
-  border-radius: 8px;
-}
-</style>\n\n`;
-
-      let vistaHTML = "";
-      secciones.forEach((seccion) => {
-        const lineas = seccion.trim().split("\n");
-        const titulo = lineas[0].trim();
-        const imagen = lineas[1]?.trim().startsWith("http") ? `<img src="${lineas[1].trim()}" alt="Imagen">` : "";
-        const contenidoTexto = imagen ? lineas.slice(2).join("<br>") : lineas.slice(1).join("<br>");
-
-        const bloqueHTML = `<div class="seccion-sencilla">
-  <details>
-    <summary><h2>${titulo}</h2></summary>
-    <div class="contenido">
-      ${imagen}
-      <h3>${contenidoTexto}</h3>
-    </div>
-  </details>
-</div>\n\n`;
-
-        resultado += bloqueHTML;
-        vistaHTML += bloqueHTML;
+        vistaHTML += bloque;
+        htmlFinal += bloque;
       });
 
-      document.getElementById("codigoGenerado").textContent = resultado.trim();
+      htmlFinal += `
+<script>
+function toggleSeccion(id, boton) {
+  const secciones = document.querySelectorAll('.contenido');
+  secciones.forEach(sec => {
+    if (sec.id !== id) sec.style.display = 'none';
+  });
+
+  const seccion = document.getElementById(id);
+  if (seccion.style.display === 'block') {
+    seccion.style.display = 'none';
+  } else {
+    seccion.style.display = 'block';
+  }
+}
+<\/script>
+</body>
+</html>`;
+
       document.getElementById("vistaPrevia").innerHTML = vistaHTML;
-
-      // Comportamiento para cerrar otros detalles abiertos
-      const todos = document.querySelectorAll(".preview details");
-      todos.forEach(det => {
-        det.addEventListener("toggle", function () {
-          if (this.open) {
-            todos.forEach(d => {
-              if (d !== this) d.removeAttribute("open");
-            });
-          }
-        });
-      });
+      document.getElementById("codigoGenerado").textContent = htmlFinal;
     }
 
     function copiarCodigo() {
       const codigo = document.getElementById("codigoGenerado").textContent;
       navigator.clipboard.writeText(codigo).then(() => {
         alert("✅ Código copiado");
-      }).catch(err => {
-        alert("❌ Error al copiar: " + err);
       });
     }
 
@@ -262,7 +169,6 @@
       document.getElementById("entrada").value = "";
       document.getElementById("vistaPrevia").innerHTML = "";
       document.getElementById("codigoGenerado").textContent = "";
-      window.scrollTo(0, 0);
     }
   </script>
 </body>
