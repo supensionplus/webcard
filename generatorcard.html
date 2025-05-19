@@ -4,25 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Generador Html Completo</title>
+  <!-- Fuente moderna Inter desde Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
       background-color: #eaf4ff;
       text-align: center;
       margin: 0 auto;
       max-width: 800px;
       padding: 20px;
-      font-size: 18px;
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
     }
 
     h2 {
       color: #000;
       margin-top: 30px;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
     }
 
-    h3 {
-      font-weight: normal;
+    p {
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
       color: #333;
+      font-weight: 400;
     }
 
     textarea {
@@ -43,6 +48,8 @@
       cursor: pointer;
       margin: 10px;
       font-size: 16px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
     }
 
     .boton:hover {
@@ -60,13 +67,20 @@
       width: 100%;
       border: none;
       text-align: left;
-      font-size: 18px;
-      font-weight: bold;
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 10px;
       cursor: pointer;
       border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .titulo-seccion {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      color: white;
     }
 
     .contenido {
@@ -100,19 +114,60 @@
     function generarSecciones() {
       const entrada = document.getElementById("entrada").value.trim().split("\n");
       let vistaHTML = '';
-      let htmlFinal = `
-<!DOCTYPE html>
+      let htmlFinal = `<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Página Generada</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: Arial, sans-serif; text-align: center; margin: 0 auto; max-width: 800px; background-color: #f4f8ff; padding: 20px; font-size: 18px; }
-h2 { color: #fff; margin: 0; font-size: 20px; }
-h3 { font-weight: normal; color: #222; }
-button.acordeon { background-color: #007bff; color: white; padding: 20px; width: 100%; text-align: left; font-size: 18px; border: none; cursor: pointer; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
-.contenido { display: none; padding: 15px; background-color: white; border-radius: 0 0 8px 8px; }
+body {
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+  margin: 0 auto;
+  max-width: 800px;
+  background-color: #f4f8ff;
+  padding: 20px;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+}
+h2 {
+  color: #000;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+}
+p {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  color: #333;
+}
+button.acordeon {
+  background-color: #007bff;
+  color: white;
+  padding: 20px;
+  width: 100%;
+  text-align: left;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  border: none;
+  cursor: pointer;
+  margin: 10px 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.titulo-seccion {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  color: white;
+}
+.contenido {
+  display: none;
+  padding: 15px;
+  background-color: white;
+  border-radius: 0 0 8px 8px;
+  text-align: center;
+}
 </style>
 </head>
 <body>\n`;
@@ -125,10 +180,10 @@ button.acordeon { background-color: #007bff; color: white; padding: 20px; width:
 
         const bloque = `
 <button class="acordeon" onclick="toggleSeccion('${id}', this)">
-  <span class="icono">▶</span> <h2>${numero}) ${titulo}</h2>
+  <span class="icono">▶</span> <span class="titulo-seccion">${numero}) ${titulo}</span>
 </button>
 <div id="${id}" class="contenido">
-  <h3>${contenido}</h3>
+  <p>${contenido}</p>
 </div>\n`;
 
         vistaHTML += bloque;
