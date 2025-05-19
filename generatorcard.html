@@ -17,17 +17,30 @@
       font-size: clamp(1.1rem, 2.5vw, 1.3rem);
     }
 
-    h2 {
-      color: #000;
-      margin-top: 30px;
-      font-size: clamp(1.4rem, 3vw, 2rem);
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 700;
+      color: #007bff;
+      margin-bottom: 0.2em;
     }
 
-    p {
+    h2, .titulo-seccion {
+      color: white;
+      font-weight: 700;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      margin: 0;
+    }
+
+    p, .contenido p {
       font-size: clamp(1.1rem, 2.5vw, 1.3rem);
       color: #333;
+      margin: 0.6em 0;
       font-weight: 400;
+      text-align: left;
+    }
+
+    strong {
+      font-weight: 700;
     }
 
     textarea {
@@ -37,6 +50,9 @@
       font-family: monospace;
       font-size: 16px;
       margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      padding: 8px;
     }
 
     .boton {
@@ -50,14 +66,11 @@
       font-size: 16px;
       font-weight: 600;
       font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease;
     }
 
     .boton:hover {
       background-color: #0056b3;
-    }
-
-    .seccion {
-      margin: 15px 0;
     }
 
     .acordeon {
@@ -75,156 +88,335 @@
       cursor: pointer;
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
+      user-select: none;
     }
 
-    .titulo-seccion {
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 700;
-      color: white;
+    .icono {
+      font-size: 20px;
+      transition: transform 0.3s ease;
+      display: inline-block;
+      line-height: 1;
+    }
+
+    .icono.abierto {
+      transform: rotate(90deg);
     }
 
     .contenido {
       display: none;
       background-color: white;
-      padding: 15px;
+      padding: 15px 20px;
       border-radius: 0 0 8px 8px;
+      text-align: left;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    iframe {
+      width: 100%;
+      height: 315px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    /* Presentación inicial elegante */
+    #presentacion {
+      background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0,123,255,0.4);
       text-align: center;
     }
 
-    .icono {
-      font-size: 20px;
+    #presentacion p {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 400;
+      margin-top: 0.5em;
+      margin-bottom: 1.5em;
+      font-style: italic;
+      opacity: 0.9;
     }
+
+    #reglas {
+      background-color: #ffffffcc;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: left;
+      max-width: 700px;
+      margin: 0 auto 40px auto;
+      box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+    }
+
+    #reglas h3 {
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    #reglas p {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
   </style>
 </head>
 <body>
+
+  <section id="presentacion">
+    <h1>GENERATOR CARD</h1>
+    <p>La plataforma definitiva para crear Tarjetas Digitales <br><em>“Dale vida a tus ideas, conecta con tu mundo”</em></p>
+  </section>
+
+  <section id="reglas">
+    <h3>Reglas para crear secciones</h3>
+    <p>&& <strong>Inicia una nueva sección.</strong></p>
+    <p>La primera línea después de && es el título de la sección.</p>
+    <p>Las líneas siguientes son párrafos de contenido.</p>
+    <p>Para insertar una imagen: Escribe el link directo de la imagen en una línea.</p>
+    <p>Para insertar un video de YouTube: Escribe el link completo del video en una línea.</p>
+    <p>Para subtítulos en negrilla dentro de la sección: La línea debe comenzar con <strong>**</strong>.</p>
+  </section>
+
   <h2>🚀 Generador Secciones</h2>
-  <textarea id="entrada" placeholder="Escribe aquí tus secciones, una por línea..."></textarea><br>
+  <textarea id="entrada" placeholder="Escribe aquí tus secciones siguiendo las reglas..."></textarea><br>
   <button class="boton" onclick="generarSecciones()">Generar Secciones</button>
 
   <h2>📁 Vista Previa</h2>
   <div id="vistaPrevia"></div>
 
   <h2>💻 Código HTML Completo</h2>
-  <textarea id="codigoGenerado" rows="5" readonly></textarea><br>
+  <textarea id="codigoGenerado" rows="10" readonly></textarea><br>
   <button class="boton" onclick="copiarCodigo()">📋 Copiar código HTML</button>
   <br>
   <button class="boton" onclick="reiniciarPagina()">🔄 Crear nuevo código</button>
 
-  <script>
-    function generarSecciones() {
-      const entrada = document.getElementById("entrada").value.trim().split("\n");
-      let vistaHTML = '';
-      let htmlFinal = `<!DOCTYPE html>
+<script>
+  function esLinkImagen(texto) {
+    return /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(texto.trim());
+  }
+
+  function esLinkYoutube(texto) {
+    return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/).+/.test(texto.trim());
+  }
+
+  function extraerIdYoutube(url) {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
+  }
+
+  function parseContenido(lineas) {
+    // Procesa las lineas de contenido para:
+    // - Negrillas (lineas que comienzan con **)
+    // - Imagenes
+    // - Videos
+    let html = '';
+    lineas.forEach(linea => {
+      let texto = linea.trim();
+      if (!texto) return;
+
+      if (texto.startsWith('**')) {
+        // negrilla para subtitulo
+        let textoLimpio = texto.slice(2).trim();
+        html += `<p><strong>${textoLimpio}</strong></p>\n`;
+      } else if (esLinkImagen(texto)) {
+        html += `<img src="${texto}" alt="Imagen relacionada">\n`;
+      } else if (esLinkYoutube(texto)) {
+        const videoId = extraerIdYoutube(texto);
+        if (videoId) {
+          html += `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>\n`;
+        }
+      } else {
+        html += `<p>${texto}</p>\n`;
+      }
+    });
+    return html;
+  }
+
+  function generarSecciones() {
+    const entrada = document.getElementById("entrada").value.trim().split('\n');
+    let vistaHTML = '';
+    let htmlFinal = `<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Página Generada</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tarjetas Digitales</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family: 'Inter', sans-serif;
-  text-align: center;
-  margin: 0 auto;
-  max-width: 800px;
-  background-color: #f4f8ff;
-  padding: 20px;
-  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-}
-h2 {
-  color: #000;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 700;
-}
-p {
-  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-  color: #333;
-}
-button.acordeon {
-  background-color: #007bff;
-  color: white;
-  padding: 20px;
-  width: 100%;
-  text-align: left;
-  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-  border: none;
-  cursor: pointer;
-  margin: 10px 0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-}
-.titulo-seccion {
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 700;
-  color: white;
-}
-.contenido {
-  display: none;
-  padding: 15px;
-  background-color: white;
-  border-radius: 0 0 8px 8px;
-  text-align: center;
-}
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f8ff;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    text-align: left;
+  }
+  h2 {
+    color: #007bff;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    margin-bottom: 10px;
+  }
+  p {
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    color: #333;
+    margin: 0.5em 0;
+  }
+  strong {
+    font-weight: 700;
+  }
+  button.acordeon {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    width: 100%;
+    text-align: left;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+  }
+  .icono {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    line-height: 1;
+  }
+  .icono.abierto {
+    transform: rotate(90deg);
+  }
+  .contenido {
+    display: none;
+    padding: 15px 20px;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+  }
+  iframe {
+    width: 100%;
+    height: 315px;
+    border-radius: 8px;
+    margin: 10px 0;
+  }
 </style>
 </head>
-<body>\n`;
+<body>
+`;
 
-      entrada.forEach((linea, index) => {
-        const numero = index + 1;
-        const id = `seccion${numero}`;
-        const titulo = linea.trim();
-        const contenido = `Contenido para "${titulo}"`;
+    // Procesar entrada en bloques por secciones (empieza con &&)
+    let secciones = [];
+    let actual = null;
 
-        const bloque = `
+    entrada.forEach(linea => {
+      const texto = linea.trim();
+      if (!texto) return; // omitir lineas vacias
+
+      if (texto.startsWith('&&')) {
+        // iniciar nueva sección
+        if (actual) secciones.push(actual);
+        actual = {titulo: null, contenido: []};
+      } else if (actual) {
+        if (!actual.titulo) {
+          actual.titulo = texto;
+        } else {
+          actual.contenido.push(texto);
+        }
+      }
+    });
+
+    if (actual) secciones.push(actual);
+
+    // Si no hay secciones, mostrar mensaje
+    if (secciones.length === 0) {
+      alert('No se detectaron secciones. Recuerda que cada sección debe comenzar con "&&"');
+      return;
+    }
+
+    // Construir acordeones
+    secciones.forEach((sec, i) => {
+      const id = `seccion${i+1}`;
+
+      const bloqueVista = `
 <button class="acordeon" onclick="toggleSeccion('${id}', this)">
-  <span class="icono">▶</span> <span class="titulo-seccion">${numero}) ${titulo}</span>
+  <span class="icono">▶</span> <span class="titulo-seccion">${i+1}) ${sec.titulo}</span>
 </button>
 <div id="${id}" class="contenido">
-  <p>${contenido}</p>
-</div>\n`;
+  ${parseContenido(sec.contenido)}
+</div>`;
 
-        vistaHTML += bloque;
-        htmlFinal += bloque;
-      });
+      vistaHTML += bloqueVista;
+      htmlFinal += bloqueVista;
+    });
 
-      htmlFinal += `
+    htmlFinal += `
 <script>
-function toggleSeccion(id, boton) {
-  const secciones = document.querySelectorAll('.contenido');
-  secciones.forEach(sec => {
-    if (sec.id !== id) sec.style.display = 'none';
-  });
+  function toggleSeccion(id, boton) {
+    const secciones = document.querySelectorAll('.contenido');
+    const iconos = document.querySelectorAll('.icono');
+    secciones.forEach((sec, idx) => {
+      if (sec.id !== id) {
+        sec.style.display = 'none';
+        iconos[idx].classList.remove('abierto');
+      }
+    });
 
-  const seccion = document.getElementById(id);
-  if (seccion.style.display === 'block') {
-    seccion.style.display = 'none';
-  } else {
-    seccion.style.display = 'block';
+    const seccion = document.getElementById(id);
+    const icono = boton.querySelector('.icono');
+    if (seccion.style.display === 'block') {
+      seccion.style.display = 'none';
+      icono.classList.remove('abierto');
+    } else {
+      seccion.style.display = 'block';
+      icono.classList.add('abierto');
+    }
   }
-}
-<\/script>
+</script>
 </body>
 </html>`;
 
-      document.getElementById("vistaPrevia").innerHTML = vistaHTML;
-      document.getElementById("codigoGenerado").textContent = htmlFinal;
-    }
+    // Mostrar resultados
+    document.getElementById('vistaPrevia').innerHTML = vistaHTML;
+    document.getElementById('codigoGenerado').value = htmlFinal;
 
-    function copiarCodigo() {
-      const codigo = document.getElementById("codigoGenerado").textContent;
-      navigator.clipboard.writeText(codigo).then(() => {
-        alert("✅ Código copiado");
-      });
-    }
+    // Scroll a la vista previa
+    document.getElementById('vistaPrevia').scrollIntoView({behavior: "smooth"});
+  }
 
-    function reiniciarPagina() {
-      document.getElementById("entrada").value = "";
-      document.getElementById("vistaPrevia").innerHTML = "";
-      document.getElementById("codigoGenerado").textContent = "";
+  function copiarCodigo() {
+    const codigo = document.getElementById('codigoGenerado');
+    codigo.select();
+    codigo.setSelectionRange(0, 99999); // para móviles
+    document.execCommand('copy');
+    alert('Código HTML copiado al portapapeles.');
+  }
+
+  function reiniciarPagina() {
+    if (confirm('¿Deseas crear un nuevo código? Se perderán los datos actuales.')) {
+      location.reload();
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
