@@ -2,421 +2,256 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Generador Html Completo</title>
-  <!-- Fuente moderna Inter desde Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Convertidor de Texto a Secciones HTML</title>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #eaf4ff;
-      text-align: center;
-      margin: 0 auto;
+      font-family: Arial, sans-serif;
+      margin: 20px auto;
       max-width: 800px;
-      padding: 20px;
-      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      padding: 10px;
+      background-color: #f0f8ff;
     }
 
     h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      color: #007bff;
-      margin-bottom: 0.2em;
-    }
-
-    h2, .titulo-seccion {
-      color: white;
-      font-weight: 700;
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      margin: 0;
-    }
-
-    p, .contenido p {
-      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      text-align: center;
       color: #333;
-      margin: 0.6em 0;
-      font-weight: 400;
-      text-align: left;
     }
 
-    strong {
-      font-weight: 700;
+    .ejemplo {
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
     }
 
     textarea {
       width: 100%;
-      height: 120px;
-      resize: vertical;
-      font-family: monospace;
-      font-size: 16px;
-      margin-bottom: 20px;
-      border-radius: 8px;
+      height: 200px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      padding: 8px;
+      resize: vertical;
+      font-size: 14px;
     }
 
-    .boton {
+    button {
       background-color: #007bff;
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 10px;
+      padding: 10px 15px;
       font-size: 16px;
-      font-weight: 600;
-      font-family: 'Inter', sans-serif;
-      transition: background-color 0.3s ease;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 20px;
     }
 
-    .boton:hover {
+    button:hover {
       background-color: #0056b3;
     }
 
-    .acordeon {
-      background-color: #007bff;
-      color: white;
-      padding: 20px;
-      width: 100%;
-      border: none;
-      text-align: left;
-      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
-      user-select: none;
-    }
-
-    .icono {
-      font-size: 20px;
-      transition: transform 0.3s ease;
-      display: inline-block;
-      line-height: 1;
-    }
-
-    .icono.abierto {
-      transform: rotate(90deg);
-    }
-
-    .contenido {
-      display: none;
-      background-color: white;
-      padding: 15px 20px;
-      border-radius: 0 0 8px 8px;
-      text-align: left;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin: 10px 0;
-    }
-
-    iframe {
-      width: 100%;
-      height: 315px;
-      border-radius: 8px;
-      margin: 10px 0;
-    }
-
-    /* Presentación inicial elegante */
-    #presentacion {
-      background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);
-      color: white;
-      padding: 30px 20px;
-      border-radius: 12px;
-      margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,123,255,0.4);
-      text-align: center;
-    }
-
-    #presentacion p {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      font-weight: 400;
-      margin-top: 0.5em;
-      margin-bottom: 1.5em;
-      font-style: italic;
-      opacity: 0.9;
-    }
-
-    #reglas {
-      background-color: #ffffffcc;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: left;
-      max-width: 700px;
-      margin: 0 auto 40px auto;
-      box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
-    }
-
-    #reglas h3 {
-      color: #007bff;
+    .output {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 150px;
+      overflow: auto;
+      white-space: pre-wrap;
+      border-radius: 6px;
       margin-bottom: 10px;
     }
 
-    #reglas p {
-      font-size: 1rem;
-      margin-bottom: 8px;
+    .preview {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
     }
 
+    /* Estilo de secciones */
+    .seccion-sencilla summary {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 5px;
+    }
+
+    .seccion-sencilla details[open] summary {
+      border-bottom: 1px solid #ccc;
+    }
+
+    .seccion-sencilla .contenido {
+      background-color: #ffffff;
+      padding: 10px;
+      border-radius: 0 0 5px 5px;
+      margin-bottom: 15px;
+      border-top: 1px solid #ffffff;
+    }
+
+    .seccion-sencilla img {
+      max-width: 100%;
+      height: auto;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+
+    /* Aquí agrego separación entre secciones */
+    .seccion-sencilla details {
+      margin-bottom: 10px;
+    }
+
+    /* Paletas de colores */
+    .paletas {
+      margin: 20px 0;
+    }
+
+    .color-box {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .color-label {
+      margin-right: 20px;
+      display: inline-flex;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
+  <h1>🔧 Bienvenido al Convertidor de Texto en Secciones HTML</h1>
 
-  <section id="presentacion">
-    <h1>GENERATOR CARD</h1>
-    <p>La plataforma definitiva para crear Tarjetas Digitales <br><em>“Dale vida a tus ideas, conecta con tu mundo”</em></p>
-  </section>
+  <div class="paletas">
+    <h3>🎨 Paleta de Colores (haz click para cambiar):</h3>
+    <div class="color-label">
+      <div id="colorFondoBarra" class="color-box" style="background-color:#007bff;" title="Fondo Barra (Sección)"></div> Fondo Barra (Sección)
+    </div>
+    <div class="color-label">
+      <div id="colorTextoBarra" class="color-box" style="background-color:#ffffff;" title="Texto Barra (Título)"></div> Texto Barra (Título)
+    </div>
+    <div class="color-label">
+      <div id="colorFondoParrafo" class="color-box" style="background-color:#ffffff;" title="Fondo Párrafo"></div> Fondo Párrafo
+    </div>
+  </div>
 
-  <section id="reglas">
-    <h3>Reglas para crear secciones</h3>
-    <p>&& <strong>Inicia una nueva sección.</strong></p>
-    <p>La primera línea después de && es el título de la sección.</p>
-    <p>Las líneas siguientes son párrafos de contenido.</p>
-    <p>Para insertar una imagen: Escribe el link directo de la imagen en una línea.</p>
-    <p>Para insertar un video de YouTube: Escribe el link completo del video en una línea.</p>
-    <p>Para subtítulos en negrilla dentro de la sección: La línea debe comenzar con <strong>**</strong>.</p>
-  </section>
+  <h2>✏️ Texto a Convertir</h2>
+  <textarea id="entrada" placeholder="Pega aquí el texto con las secciones usando && al inicio de cada título..."></textarea>
+  <button onclick="generarHTML()">🚀 Convertir / Generar Secciones</button>
 
-  <h2>🚀 Generador Secciones</h2>
-  <textarea id="entrada" placeholder="Escribe aquí tus secciones siguiendo las reglas..."></textarea><br>
-  <button class="boton" onclick="generarSecciones()">Generar Secciones</button>
+  <h2>📂 Secciones Creadas</h2>
+  <div class="preview" id="vistaPrevia"></div>
 
-  <h2>📁 Vista Previa</h2>
-  <div id="vistaPrevia"></div>
+  <h2>💻 Código HTML</h2>
+  <div class="output" id="codigoGenerado"></div>
+  <button onclick="copiarCodigo()">📋 Copiar código HTML</button>
 
-  <h2>💻 Código HTML Completo</h2>
-  <textarea id="codigoGenerado" rows="10" readonly></textarea><br>
-  <button class="boton" onclick="copiarCodigo()">📋 Copiar código HTML</button>
-  <br>
-  <button class="boton" onclick="reiniciarPagina()">🔄 Crear nuevo código</button>
+  <script>
+    // Paletas colores click para cambiar
+    const colorFondoBarra = document.getElementById("colorFondoBarra");
+    const colorTextoBarra = document.getElementById("colorTextoBarra");
+    const colorFondoParrafo = document.getElementById("colorFondoParrafo");
 
-<script>
-  function esLinkImagen(texto) {
-    return /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(texto.trim());
-  }
-
-  function esLinkYoutube(texto) {
-    return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/).+/.test(texto.trim());
-  }
-
-  function extraerIdYoutube(url) {
-    const regExp = /^.*((youtu.be\/)|(v\/)|(u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : null;
-  }
-
-  function parseContenido(lineas) {
-    // Procesa las lineas de contenido para:
-    // - Negrillas (lineas que comienzan con **)
-    // - Imagenes
-    // - Videos
-    let html = '';
-    lineas.forEach(linea => {
-      let texto = linea.trim();
-      if (!texto) return;
-
-      if (texto.startsWith('**')) {
-        // negrilla para subtitulo
-        let textoLimpio = texto.slice(2).trim();
-        html += `<p><strong>${textoLimpio}</strong></p>\n`;
-      } else if (esLinkImagen(texto)) {
-        html += `<img src="${texto}" alt="Imagen relacionada">\n`;
-      } else if (esLinkYoutube(texto)) {
-        const videoId = extraerIdYoutube(texto);
-        if (videoId) {
-          html += `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>\n`;
-        }
-      } else {
-        html += `<p>${texto}</p>\n`;
+    function cambiarColor(element) {
+      const nuevoColor = prompt("Introduce un color CSS válido (nombre, hex, rgb...):", element.style.backgroundColor);
+      if (nuevoColor) {
+        element.style.backgroundColor = nuevoColor;
       }
-    });
-    return html;
-  }
-
-  function generarSecciones() {
-    const entrada = document.getElementById("entrada").value.trim().split('\n');
-    let vistaHTML = '';
-    let htmlFinal = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Tarjetas Digitales</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f8ff;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-    text-align: left;
-  }
-  h2 {
-    color: #007bff;
-    font-weight: 700;
-    font-size: clamp(1.6rem, 4vw, 2rem);
-    margin-bottom: 10px;
-  }
-  p {
-    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-    color: #333;
-    margin: 0.5em 0;
-  }
-  strong {
-    font-weight: 700;
-  }
-  button.acordeon {
-    background-color: #007bff;
-    color: white;
-    padding: 20px;
-    width: 100%;
-    text-align: left;
-    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 600;
-  }
-  .icono {
-    font-size: 20px;
-    transition: transform 0.3s ease;
-    display: inline-block;
-    line-height: 1;
-  }
-  .icono.abierto {
-    transform: rotate(90deg);
-  }
-  .contenido {
-    display: none;
-    padding: 15px 20px;
-    background-color: white;
-    border-radius: 0 0 8px 8px;
-    text-align: left;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-  }
-  img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 10px 0;
-  }
-  iframe {
-    width: 100%;
-    height: 315px;
-    border-radius: 8px;
-    margin: 10px 0;
-  }
-</style>
-</head>
-<body>
-`;
-
-    // Procesar entrada en bloques por secciones (empieza con &&)
-    let secciones = [];
-    let actual = null;
-
-    entrada.forEach(linea => {
-      const texto = linea.trim();
-      if (!texto) return; // omitir lineas vacias
-
-      if (texto.startsWith('&&')) {
-        // iniciar nueva sección
-        if (actual) secciones.push(actual);
-        actual = {titulo: null, contenido: []};
-      } else if (actual) {
-        if (!actual.titulo) {
-          actual.titulo = texto;
-        } else {
-          actual.contenido.push(texto);
-        }
-      }
-    });
-
-    if (actual) secciones.push(actual);
-
-    // Si no hay secciones, mostrar mensaje
-    if (secciones.length === 0) {
-      alert('No se detectaron secciones. Recuerda que cada sección debe comenzar con "&&"');
-      return;
     }
 
-    // Construir acordeones
-    secciones.forEach((sec, i) => {
-      const id = `seccion${i+1}`;
+    colorFondoBarra.onclick = () => cambiarColor(colorFondoBarra);
+    colorTextoBarra.onclick = () => cambiarColor(colorTextoBarra);
+    colorFondoParrafo.onclick = () => cambiarColor(colorFondoParrafo);
 
-      const bloqueVista = `
-<button class="acordeon" onclick="toggleSeccion('${id}', this)">
-  <span class="icono">▶</span> <span class="titulo-seccion">${i+1}) ${sec.titulo}</span>
-</button>
-<div id="${id}" class="contenido">
-  ${parseContenido(sec.contenido)}
-</div>`;
+    function generarHTML() {
+      const texto = document.getElementById("entrada").value;
+      const secciones = texto.split("&&").filter(s => s.trim() !== "");
+      const fondoBarra = colorFondoBarra.style.backgroundColor || "#007bff";
+      const textoBarra = colorTextoBarra.style.backgroundColor || "#ffffff";
+      const fondoParrafo = colorFondoParrafo.style.backgroundColor || "#ffffff";
 
-      vistaHTML += bloqueVista;
-      htmlFinal += bloqueVista;
-    });
+      let resultado = `<style>
+.seccion-sencilla summary {
+  background-color: ${fondoBarra};
+  color: ${textoBarra};
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 5px;
+}
+.seccion-sencilla details[open] summary {
+  border-bottom: 1px solid #ccc;
+}
+.seccion-sencilla .contenido {
+  background-color: ${fondoParrafo};
+  padding: 10px;
+  border-radius: 0 0 5px 5px;
+  margin-bottom: 15px;
+  border-top: 1px solid ${fondoParrafo};
+}
+.seccion-sencilla img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+.seccion-sencilla details {
+  margin-bottom: 10px;
+}
+</style>\n\n`;
 
-    htmlFinal += `
-<script>
-  function toggleSeccion(id, boton) {
-    const secciones = document.querySelectorAll('.contenido');
-    const iconos = document.querySelectorAll('.icono');
-    secciones.forEach((sec, idx) => {
-      if (sec.id !== id) {
-        sec.style.display = 'none';
-        iconos[idx].classList.remove('abierto');
-      }
-    });
+      let vistaHTML = "";
+      secciones.forEach((seccion, i) => {
+        const lineas = seccion.trim().split("\n");
+        const titulo = lineas[0].trim();
+        const imagen = lineas[1]?.trim().startsWith("http") ? `<img src="${lineas[1].trim()}" alt="Imagen">` : "";
+        const contenidoTexto = imagen ? lineas.slice(2).join("<br>") : lineas.slice(1).join("<br>");
 
-    const seccion = document.getElementById(id);
-    const icono = boton.querySelector('.icono');
-    if (seccion.style.display === 'block') {
-      seccion.style.display = 'none';
-      icono.classList.remove('abierto');
-    } else {
-      seccion.style.display = 'block';
-      icono.classList.add('abierto');
+        const bloqueHTML = `<div class="seccion-sencilla">
+  <details>
+    <summary>${i + 1}) ${titulo}</summary>
+    <div class="contenido">
+      ${imagen}
+      <p>${contenidoTexto}</p>
+    </div>
+  </details>
+</div>\n\n`;
+
+        resultado += bloqueHTML;
+        vistaHTML += bloqueHTML;
+      });
+
+      document.getElementById("codigoGenerado").textContent = resultado.trim();
+      document.getElementById("vistaPrevia").innerHTML = vistaHTML;
+
+      // Comportamiento para cerrar otras secciones abiertas
+      const todos = document.querySelectorAll(".preview details");
+      todos.forEach(det => {
+        det.addEventListener("toggle", function () {
+          if (this.open) {
+            todos.forEach(d => {
+              if (d !== this) d.removeAttribute("open");
+            });
+          }
+        });
+      });
     }
-  }
-</script>
-</body>
-</html>`;
 
-    // Mostrar resultados
-    document.getElementById('vistaPrevia').innerHTML = vistaHTML;
-    document.getElementById('codigoGenerado').value = htmlFinal;
-
-    // Scroll a la vista previa
-    document.getElementById('vistaPrevia').scrollIntoView({behavior: "smooth"});
-  }
-
-  function copiarCodigo() {
-    const codigo = document.getElementById('codigoGenerado');
-    codigo.select();
-    codigo.setSelectionRange(0, 99999); // para móviles
-    document.execCommand('copy');
-    alert('Código HTML copiado al portapapeles.');
-  }
-
-  function reiniciarPagina() {
-    if (confirm('¿Deseas crear un nuevo código? Se perderán los datos actuales.')) {
-      location.reload();
+    function copiarCodigo() {
+      const codigo = document.getElementById("codigoGenerado").textContent;
+      navigator.clipboard.writeText(codigo).then(() => {
+        alert("✅ Código HTML copiado a memoria");
+      }).catch(err => {
+        alert("❌ Error al copiar: " + err);
+      });
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
