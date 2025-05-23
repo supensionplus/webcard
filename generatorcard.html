@@ -1,256 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Convertidor de Texto a Secciones HTML</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card-Di Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px auto;
-      max-width: 800px;
-      padding: 10px;
-      background-color: #f0f8ff;
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-
-    .ejemplo {
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-    }
-
-    textarea {
-      width: 100%;
-      height: 200px;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: vertical;
-      font-size: 14px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      padding: 10px 15px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .output {
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      padding: 10px;
-      height: 150px;
-      overflow: auto;
-      white-space: pre-wrap;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-
-    .preview {
-      margin-top: 15px;
-      padding: 15px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-
-    /* Estilo de secciones */
-    .seccion-sencilla summary {
-      background-color: #007bff;
-      color: #fff;
-      padding: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      border-radius: 5px;
-    }
-
-    .seccion-sencilla details[open] summary {
-      border-bottom: 1px solid #ccc;
-    }
-
-    .seccion-sencilla .contenido {
-      background-color: #ffffff;
-      padding: 10px;
-      border-radius: 0 0 5px 5px;
-      margin-bottom: 15px;
-      border-top: 1px solid #ffffff;
-    }
-
-    .seccion-sencilla img {
-      max-width: 100%;
-      height: auto;
-      margin: 10px 0;
-      border-radius: 8px;
-    }
-
-    /* Aquí agrego separación entre secciones */
-    .seccion-sencilla details {
-      margin-bottom: 10px;
-    }
-
-    /* Paletas de colores */
-    .paletas {
-      margin: 20px 0;
-    }
-
-    .color-box {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-      margin-right: 10px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    .color-label {
-      margin-right: 20px;
-      display: inline-flex;
-      align-items: center;
-    }
+    body { font-family: 'Inter', sans-serif; background: #f4f8ff; margin: 0 auto; padding: 20px; max-width: 800px; font-size: clamp(1.2rem, 4vw, 1.6rem); line-height: 1.4; }
+    textarea { width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: monospace; }
+    button { background: #007bff; color: #fff; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; margin: 10px 5px; font-size: 1rem; }
+    .portada { width: 90%; display: block; margin: 0 auto 10px; border-radius: 8px; }
+    .logo { width: 15%; max-width: 120px; min-width: 60px; height: auto; border-radius: 50%; display: block; margin: -50px auto 10px; border: 4px solid #fff; background: #fff; }
+    h2 { font-size: clamp(1.6rem, 6vw, 2.4rem); color: #4a90e2; text-align: center; margin: 10px 0; }
+    h3 { font-size: clamp(1.4rem, 5vw, 1.8rem); color: #333; text-align: center; margin: 8px 0; }
+    details { margin: 15px 0; border-radius: 6px; overflow: hidden; }
+    details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.4rem, 4vw, 1.8rem); cursor: pointer; font-weight: 600; }
+    .contenido { padding: 15px; background: #fff; font-size: clamp(1rem, 3vw, 1.4rem); }
+    .contacto, .redes, .qr, .firma { text-align: center; margin: 20px 0; }
+    .redes a { margin: 0 10px; font-size: clamp(1.6rem, 5vw, 2rem); color: #007bff; text-decoration: none; }
+    pre { background: #eee; padding: 15px; border-radius: 6px; white-space: pre-wrap; font-size: 1rem; display: none; height: auto; max-height: 10em; overflow: auto; }
   </style>
 </head>
 <body>
-  <h1>🔧 Bienvenido al Convertidor de Texto en Secciones HTML</h1>
-
-  <div class="paletas">
-    <h3>🎨 Paleta de Colores (haz click para cambiar):</h3>
-    <div class="color-label">
-      <div id="colorFondoBarra" class="color-box" style="background-color:#007bff;" title="Fondo Barra (Sección)"></div> Fondo Barra (Sección)
-    </div>
-    <div class="color-label">
-      <div id="colorTextoBarra" class="color-box" style="background-color:#ffffff;" title="Texto Barra (Título)"></div> Texto Barra (Título)
-    </div>
-    <div class="color-label">
-      <div id="colorFondoParrafo" class="color-box" style="background-color:#ffffff;" title="Fondo Párrafo"></div> Fondo Párrafo
-    </div>
-  </div>
-
-  <h2>✏️ Texto a Convertir</h2>
-  <textarea id="entrada" placeholder="Pega aquí el texto con las secciones usando && al inicio de cada título..."></textarea>
-  <button onclick="generarHTML()">🚀 Convertir / Generar Secciones</button>
-
-  <h2>📂 Secciones Creadas</h2>
-  <div class="preview" id="vistaPrevia"></div>
-
-  <h2>💻 Código HTML</h2>
-  <div class="output" id="codigoGenerado"></div>
-  <button onclick="copiarCodigo()">📋 Copiar código HTML</button>
+  <h1>🚀 Card-Di Generator</h1>
+  <p>Pega aquí tu contenido etiquetado (#PORTADA, #LOGO, #TITULO, etc.) y luego haz clic en Generar.</p>
+  <textarea id="entradaDatos" placeholder="#PORTADA:\n...\n#LOGO:\n...\n#TITULO:\n...\n#DESCRIPCION:\n...\n#SECCIONES:\n&&...\n#MAPA:\n...\n#UBICACION:\n...\n#REDES:\n...\n#LINK_QR:\n..."></textarea>
+  <button id="btnGenerar" onclick="generarTarjeta()">🎨 Generar Tarjeta</button>
+  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
+  <div id="vistaPrevia" style="margin-top:20px;"></div>
+  <pre id="codigoGenerado" style="margin-top:20px;"></pre>
 
   <script>
-    // Paletas colores click para cambiar
-    const colorFondoBarra = document.getElementById("colorFondoBarra");
-    const colorTextoBarra = document.getElementById("colorTextoBarra");
-    const colorFondoParrafo = document.getElementById("colorFondoParrafo");
-
-    function cambiarColor(element) {
-      const nuevoColor = prompt("Introduce un color CSS válido (nombre, hex, rgb...):", element.style.backgroundColor);
-      if (nuevoColor) {
-        element.style.backgroundColor = nuevoColor;
-      }
-    }
-
-    colorFondoBarra.onclick = () => cambiarColor(colorFondoBarra);
-    colorTextoBarra.onclick = () => cambiarColor(colorTextoBarra);
-    colorFondoParrafo.onclick = () => cambiarColor(colorFondoParrafo);
-
-    function generarHTML() {
-      const texto = document.getElementById("entrada").value;
-      const secciones = texto.split("&&").filter(s => s.trim() !== "");
-      const fondoBarra = colorFondoBarra.style.backgroundColor || "#007bff";
-      const textoBarra = colorTextoBarra.style.backgroundColor || "#ffffff";
-      const fondoParrafo = colorFondoParrafo.style.backgroundColor || "#ffffff";
-
-      let resultado = `<style>
-.seccion-sencilla summary {
-  background-color: ${fondoBarra};
-  color: ${textoBarra};
-  padding: 10px;
-  cursor: pointer;
-  font-size: 18px;
-  border-radius: 5px;
-}
-.seccion-sencilla details[open] summary {
-  border-bottom: 1px solid #ccc;
-}
-.seccion-sencilla .contenido {
-  background-color: ${fondoParrafo};
-  padding: 10px;
-  border-radius: 0 0 5px 5px;
-  margin-bottom: 15px;
-  border-top: 1px solid ${fondoParrafo};
-}
-.seccion-sencilla img {
-  max-width: 100%;
-  height: auto;
-  margin: 10px 0;
-  border-radius: 8px;
-}
-.seccion-sencilla details {
-  margin-bottom: 10px;
-}
-</style>\n\n`;
-
-      let vistaHTML = "";
-      secciones.forEach((seccion, i) => {
-        const lineas = seccion.trim().split("\n");
-        const titulo = lineas[0].trim();
-        const imagen = lineas[1]?.trim().startsWith("http") ? `<img src="${lineas[1].trim()}" alt="Imagen">` : "";
-        const contenidoTexto = imagen ? lineas.slice(2).join("<br>") : lineas.slice(1).join("<br>");
-
-        const bloqueHTML = `<div class="seccion-sencilla">
-  <details>
-    <summary>${i + 1}) ${titulo}</summary>
-    <div class="contenido">
-      ${imagen}
-      <p>${contenidoTexto}</p>
-    </div>
-  </details>
-</div>\n\n`;
-
-        resultado += bloqueHTML;
-        vistaHTML += bloqueHTML;
+    function generarTarjeta() {
+      const texto = document.getElementById('entradaDatos').value || '';
+      if (!texto.trim()) return alert('Por favor, pega el contenido.');
+      const datos = {};
+      texto.split(/\n(?=#)/).forEach(block => {
+        const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
+        if (match) datos[match[1]] = match[2].trim();
       });
-
-      document.getElementById("codigoGenerado").textContent = resultado.trim();
-      document.getElementById("vistaPrevia").innerHTML = vistaHTML;
-
-      // Comportamiento para cerrar otras secciones abiertas
-      const todos = document.querySelectorAll(".preview details");
-      todos.forEach(det => {
-        det.addEventListener("toggle", function () {
-          if (this.open) {
-            todos.forEach(d => {
-              if (d !== this) d.removeAttribute("open");
-            });
-          }
+      let html = '';
+      if (datos.PORTADA) html += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
+      if (datos.LOGO) html += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
+      if (datos.TITULO) html += `<h2>${datos.TITULO}</h2>`;
+      if (datos.DESCRIPCION) html += `<h3>${datos.DESCRIPCION}</h3>`;
+      if (datos.QUIENES_SOMOS) html += `<p>${datos.QUIENES_SOMOS}</p>`;
+      if (datos.SECCIONES) {
+        datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
+          const [titulo, ...cuerpo] = s.trim().split('\n');
+          const content = cuerpo.map(line => `<p>${line}</p>`).join('');
+          html += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
-      });
+      }
+      if (datos.MAPA) html += `<div class="qr"><img src='https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(datos.MAPA)}&zoom=15&size=600x200&key=YOUR_API_KEY' alt='Mapa'></div>`;
+      if (datos.UBICACION) {
+        html += `<div class="contacto"><h3>Contacto</h3>`;
+        datos.UBICACION.split('\n').forEach(l => html += `<span>${l}</span>`);
+        html += `</div>`;
+      }
+      if (datos.REDES) {
+        html += `<div class="redes"><h3>Redes Sociales</h3>`;
+        datos.REDES.split('\n').forEach(url => html += `<a href='${url}' target='_blank'>🔗</a>`);
+        html += `</div>`;
+      }
+      if (datos.LINK_QR) html += `<div class="qr"><h3>Escanea para acceder</h3><img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}' alt='QR'></div>`;
+      html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
+
+      document.getElementById('vistaPrevia').innerHTML = html;
+      const pre = document.getElementById('codigoGenerado');
+      pre.textContent = html;
+      pre.style.display = 'block';
+      document.getElementById('btnCopiar').style.display = 'inline-block';
+      document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function() {
+        if (this.open) document.querySelectorAll('details').forEach(o => { if (o !== this) o.removeAttribute('open'); });
+      }));
     }
 
-    function copiarCodigo() {
-      const codigo = document.getElementById("codigoGenerado").textContent;
-      navigator.clipboard.writeText(codigo).then(() => {
-        alert("✅ Código HTML copiado a memoria");
-      }).catch(err => {
-        alert("❌ Error al copiar: " + err);
-      });
+    function copiarHTML() {
+      navigator.clipboard.writeText(document.getElementById('codigoGenerado').textContent)
+        .then(() => alert('✅ Código copiado'));
     }
   </script>
 </body>
