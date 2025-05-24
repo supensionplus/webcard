@@ -11,13 +11,17 @@
     button { background: #007bff; color: #fff; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; margin: 10px 5px; font-size: 1rem; }
     .portada { width: 90%; display: block; margin: 0 auto 10px; border-radius: 8px; }
     .logo { width: 15%; max-width: 120px; min-width: 60px; height: auto; border-radius: 50%; display: block; margin: -50px auto 10px; border: 4px solid #fff; background: #fff; }
-    h2 { font-size: clamp(1.6rem, 6vw, 2.4rem); color: #4a90e2; text-align: center; margin: 10px 0; }
-    h3 { font-size: clamp(1.4rem, 5vw, 1.8rem); color: #333; text-align: center; margin: 8px 0; }
+    h2, h3, .descripcion, .ubicacion-line, .redes-line { text-align: center; }
+    h2 { font-size: clamp(1.6rem, 6vw, 2.4rem); color: #4a90e2; margin: 10px 0; }
+    h3 { font-size: clamp(1.4rem, 5vw, 1.8rem); color: #333; margin: 8px 0; }
+    .descripcion { font-size: clamp(1.6rem, 5vw, 2rem); margin: 8px 0; color: #555; }
     details { margin: 15px 0; border-radius: 6px; overflow: hidden; }
     details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.4rem, 4vw, 1.8rem); cursor: pointer; font-weight: 600; }
     .contenido { padding: 15px; background: #fff; font-size: clamp(1rem, 3vw, 1.4rem); }
-    .contacto, .redes, .qr, .firma { text-align: center; margin: 20px 0; }
-    .redes a { margin: 0 10px; font-size: clamp(1.6rem, 5vw, 2rem); color: #007bff; text-decoration: none; }
+    .contacto, .qr, .firma, .descargar { text-align: center; margin: 20px 0; }
+    .redes-line { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
+    .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
+    .redes-line img:hover { transform: scale(1.1); }
     pre { background: #eee; padding: 15px; border-radius: 6px; white-space: pre-wrap; font-size: 1rem; display: none; height: auto; max-height: 10em; overflow: auto; }
   </style>
 </head>
@@ -26,9 +30,9 @@
   <p>Pega aquí tu contenido etiquetado (#PORTADA, #LOGO, #TITULO, etc.) y luego haz clic en Generar.</p>
   <textarea id="entradaDatos" placeholder="#PORTADA:\n...\n#LOGO:\n...\n#TITULO:\n...\n#DESCRIPCION:\n...\n#SECCIONES:\n&&...\n#MAPA:\n...\n#UBICACION:\n...\n#REDES:\n...\n#LINK_QR:\n..."></textarea>
   <button id="btnGenerar" onclick="generarTarjeta()">🎨 Generar Tarjeta</button>
-  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
   <div id="vistaPrevia" style="margin-top:20px;"></div>
   <pre id="codigoGenerado" style="margin-top:20px;"></pre>
+  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
 
   <script>
     function generarTarjeta() {
@@ -43,8 +47,8 @@
       if (datos.PORTADA) html += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
       if (datos.LOGO) html += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
       if (datos.TITULO) html += `<h2>${datos.TITULO}</h2>`;
-      if (datos.DESCRIPCION) html += `<h3>${datos.DESCRIPCION}</h3>`;
-      if (datos.QUIENES_SOMOS) html += `<p>${datos.QUIENES_SOMOS}</p>`;
+      if (datos.DESCRIPCION) html += `<h3 class='descripcion'>${datos.DESCRIPCION}</h3>`;
+      if (datos.QUIENES_SOMOS) html += `<h3>${datos.QUIENES_SOMOS}</h3>`;
       if (datos.SECCIONES) {
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
@@ -52,20 +56,39 @@
           html += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
       }
-      if (datos.MAPA) html += `<div class="qr"><img src='https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(datos.MAPA)}&zoom=15&size=600x200&key=YOUR_API_KEY' alt='Mapa'></div>`;
+      if (datos.MAPA) html += `<div class="qr"><iframe src="${datos.MAPA}" width="90%" height="450" style="border:0;display:block;margin:0 auto;" allowfullscreen="" loading="lazy"></iframe></div>`;
       if (datos.UBICACION) {
-        html += `<div class="contacto"><h3>Contacto</h3>`;
-        datos.UBICACION.split('\n').forEach(l => html += `<span>${l}</span>`);
-        html += `</div>`;
+        html += `<div class="contacto ubicacion-line">
+          ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
+        </div>`;
       }
       if (datos.REDES) {
-        html += `<div class="redes"><h3>Redes Sociales</h3>`;
-        datos.REDES.split('\n').forEach(url => html += `<a href='${url}' target='_blank'>🔗</a>`);
+        const iconMap = {
+          Facebook: 'https://i.ibb.co/6JJ5FZ1S/IFbook.png',
+          Instagram: 'https://i.ibb.co/chCqtLkw/IInstagram.png',
+          Youtube: 'https://i.ibb.co/VYxJpn7X/IYoutube.png',
+          Whatsapp: 'https://i.ibb.co/bgnHxP1y/IWapp.png',
+          Tiktok: 'https://i.ibb.co/nsy5C1y9/ITiktok.png',
+          Twitter: 'https://i.ibb.co/FqfRcjkg/ITwitter.png',
+          Linkedin: 'https://i.ibb.co/G33VkpGb/ILinkedin.png'
+        };
+        html += `<div class="redes-line">`;
+        datos.REDES.split('\n').forEach(line => {
+          const [red, url] = line.split(':').map(v => v.trim());
+          const icon = iconMap[red];
+          if (icon) {
+            if (url) {
+              let href = red === 'Whatsapp' && !url.includes('http') ? `https://wa.me/${url}` : url;
+              html += `<a href="${href}" target="_blank"><img src="${icon}" alt="${red}"></a>`;
+            } else {
+              html += `<img src="${icon}" alt="${red}" title="Sin enlace">`;
+            }
+          }
+        });
         html += `</div>`;
       }
-      if (datos.LINK_QR) html += `<div class="qr"><h3>Escanea para acceder</h3><img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}' alt='QR'></div>`;
+      html += `<div class="descargar"><button>📥 Descargar Contacto</button></div>`;
       html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
-
       document.getElementById('vistaPrevia').innerHTML = html;
       const pre = document.getElementById('codigoGenerado');
       pre.textContent = html;
@@ -77,8 +100,10 @@
     }
 
     function copiarHTML() {
-      navigator.clipboard.writeText(document.getElementById('codigoGenerado').textContent)
-        .then(() => alert('✅ Código copiado'));
+      const codigo = document.getElementById('codigoGenerado');
+      navigator.clipboard.writeText(codigo.textContent)
+        .then(() => alert('✅ Código copiado'))
+        .catch(() => alert('❌ Error al copiar'));
     }
   </script>
 </body>
