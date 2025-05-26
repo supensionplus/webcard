@@ -18,7 +18,6 @@
     details { margin: 15px 0; border-radius: 6px; overflow: hidden; }
     details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.4rem, 4vw, 1.8rem); cursor: pointer; font-weight: 600; }
     .contenido { padding: 15px; background: #fff; font-size: clamp(1rem, 3vw, 1.4rem); }
-    .contenido img, .contenido video, .contenido iframe { max-width: 90%; display: block; margin: 10px auto; border-radius: 8px; }
     .contacto, .qr, .firma, .descargar { text-align: center; margin: 20px 0; }
     .redes-line { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
     .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
@@ -54,18 +53,23 @@
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
           const content = cuerpo.map(line => {
-            if (line.match(/\.(jpg|png|jpeg|gif)$/i)) return `<img src="${line}" alt="Imagen">`;
-            if (line.match(/\.mp4$/i)) return `<video src="${line}" controls></video>`;
-            if (line.includes('youtube.com') || line.includes('youtu.be')) {
-              const videoId = line.split('v=')[1]?.split('&')[0] || line.split('/').pop();
-              return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+            if (/https?:\/\/.+\.(jpg|jpeg|png|gif)/i.test(line)) {
+              return `<img src="${line}" style="width:90%;display:block;margin:10px auto;">`;
+            } else if (/https?:\/\/.+\.(mp4|webm)/i.test(line)) {
+              return `<video controls style="width:90%;display:block;margin:10px auto;"><source src="${line}"></video>`;
             }
             return `<p>${line}</p>`;
           }).join('');
           html += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
       }
-      if (datos.MAPA) html += `<div class="qr"><iframe src="${datos.MAPA}" width="90%" height="450" style="border:0;display:block;margin:0 auto;" allowfullscreen="" loading="lazy"></iframe></div>`;
+      if (datos.MAPA) {
+        html += `<div class="qr" style="text-align:center;margin:20px 0;">
+                  <a href="${datos.MAPA}" target="_blank">
+                    <button>📍 Ver ubicación en Google Maps</button>
+                  </a>
+                </div>`;
+      }
       if (datos.UBICACION) {
         html += `<div class="contacto ubicacion-line">
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
@@ -81,25 +85,26 @@
           Twitter: 'https://i.ibb.co/FqfRcjkg/ITwitter.png',
           Linkedin: 'https://i.ibb.co/G33VkpGb/ILinkedin.png'
         };
-        const redes = datos.REDES.split('\n').map(line => line.trim()).filter(Boolean);
         html += `<div class="redes-line">`;
-        for (let i = 0; i < redes.length; i += 2) {
-          const red = redes[i].replace(':', '').trim();
-          const link = redes[i + 1]?.trim();
+        datos.REDES.split('\n').forEach(line => {
+          const [red, url] = line.split(':').map(v => v.trim());
           const icon = iconMap[red];
           if (icon) {
-            if (link) {
-              let href = red === 'Whatsapp' && !link.includes('http') ? `https://wa.me/${link}` : link;
+            if (url) {
+              let href = red === 'Whatsapp' && !url.includes('http') ? `https://wa.me/${url}` : url;
               html += `<a href="${href}" target="_blank"><img src="${icon}" alt="${red}"></a>`;
             } else {
               html += `<img src="${icon}" alt="${red}" title="Sin enlace">`;
             }
           }
-        }
+        });
         html += `</div>`;
       }
       if (datos.LINK_QR) {
-        html += `<div class="qr"><h3>Escanea para acceder</h3><img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}' alt='QR'></div>`;
+        html += `<div class="qr" style="text-align:center;">
+          <h3>Escanea para acceder</h3>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
+        </div>`;
       }
       html += `<div class="descargar"><button>📥 Descargar Contacto</button></div>`;
       html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
@@ -108,7 +113,7 @@
       pre.textContent = html;
       pre.style.display = 'block';
       document.getElementById('btnCopiar').style.display = 'inline-block';
-      document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function () {
+      document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function() {
         if (this.open) document.querySelectorAll('details').forEach(o => { if (o !== this) o.removeAttribute('open'); });
       }));
     }
