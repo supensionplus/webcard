@@ -28,11 +28,11 @@
 <body>
   <h1>🚀 Card-Di Generator</h1>
   <p>Pega aquí tu contenido etiquetado (#PORTADA, #LOGO, #TITULO, etc.) y luego haz clic en Generar.</p>
-  <textarea id="entradaDatos"></textarea>
+  <textarea id="entradaDatos" placeholder="#PORTADA:\n...\n#LOGO:\n...\n#TITULO:\n...\n#DESCRIPCION:\n...\n#SECCIONES:\n&&...\n#MAPA:\n...\n#UBICACION:\n...\n#REDES:\n...\n#LINK_QR:\n..."></textarea>
   <button id="btnGenerar" onclick="generarTarjeta()">🎨 Generar Tarjeta</button>
   <div id="vistaPrevia" style="margin-top:20px;"></div>
   <pre id="codigoGenerado" style="margin-top:20px;"></pre>
-  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
+  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código de Tarjeta</button>
 
   <script>
     function generarTarjeta() {
@@ -43,7 +43,6 @@
         const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
         if (match) datos[match[1]] = match[2].trim();
       });
-
       let html = '';
       if (datos.PORTADA) html += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
       if (datos.LOGO) html += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
@@ -54,19 +53,28 @@
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
           const content = cuerpo.map(line => {
-            if (/https?:\/\/.+\.(jpg|jpeg|png|gif)/i.test(line)) {
+            if (/https?:\/\/.*\.(jpg|jpeg|png|gif)/i.test(line)) {
               return `<img src="${line}" style="width:90%;display:block;margin:10px auto;">`;
-            } else if (/https?:\/\/.+\.(mp4|webm)/i.test(line)) {
-              return `<video controls style="width:90%;display:block;margin:10px auto;"><source src="${line}"></video>`;
+            } else if (/https?:\/\/(www\.)?youtube\.com|youtu\.be\//.test(line)) {
+              const videoId = line.includes('embed') ? line.split('embed/')[1] : line.split('v=')[1]?.split('&')[0];
+              return videoId ? `<iframe width="90%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="display:block;margin:10px auto;"></iframe>` : `<p>${line}</p>`;
             }
             return `<p>${line}</p>`;
           }).join('');
           html += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
       }
-      if (datos.MAPA) html += `<div class="qr" style="text-align:center;margin:20px 0;"><a href="${datos.MAPA}" target="_blank"><button>📍 Ver ubicación en Google Maps</button></a></div>`;
+      if (datos.MAPA) {
+        html += `<div class="qr" style="text-align:center;margin:20px 0;">
+                  <a href="${datos.MAPA}" target="_blank">
+                    <button>📍 Ver ubicación en Google Maps</button>
+                  </a>
+                </div>`;
+      }
       if (datos.UBICACION) {
-        html += `<div class="contacto ubicacion-line">${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}</div>`;
+        html += `<div class="contacto ubicacion-line">
+          ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
+        </div>`;
       }
       if (datos.REDES) {
         const iconMap = {
@@ -94,14 +102,16 @@
         html += `</div>`;
       }
       if (datos.LINK_QR) {
-        html += `<div class="qr" style="text-align:center;"><h3>Escanea para acceder</h3><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR"></div>`;
+        html += `<div class="qr" style="text-align:center;">
+          <h3>Escanea para acceder</h3>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
+        </div>`;
       }
-      html += `<div class="descargar"><button onclick="descargarVCF()">📥 Descargar Contacto</button></div>`;
+      html += `<div class="descargar"><button onclick="descargarVCF('${datos.TITULO}', '${datos.UBICACION}')">📥 Descargar Contacto</button></div>`;
       html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
-
       document.getElementById('vistaPrevia').innerHTML = html;
       const pre = document.getElementById('codigoGenerado');
-      pre.textContent = html;
+      pre.textContent = document.getElementById('vistaPrevia').innerHTML;
       pre.style.display = 'block';
       document.getElementById('btnCopiar').style.display = 'inline-block';
       document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function() {
@@ -116,16 +126,17 @@
         .catch(() => alert('❌ Error al copiar'));
     }
 
-    function descargarVCF() {
-      const vcfData = `BEGIN:VCARD\nVERSION:3.0\nN:SupensionPlus;;;\nFN:SupensionPlus\nORG:SupensionPlus\nTEL:+573117715353\nEMAIL:supensionplus@gmail.com\nEND:VCARD`;
-      const blob = new Blob([vcfData], { type: 'text/vcard' });
+    function descargarVCF(nombre, datosUbicacion) {
+      const vcf = `BEGIN:VCARD\nVERSION:3.0\nFN:${nombre}\nNOTE:${datosUbicacion}\nEND:VCARD`;
+      const blob = new Blob([vcf], { type: 'text/vcard' });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'contacto.vcf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'contacto.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
