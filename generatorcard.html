@@ -18,6 +18,7 @@
     details { margin: 15px 0; border-radius: 6px; overflow: hidden; }
     details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.4rem, 4vw, 1.8rem); cursor: pointer; font-weight: 600; }
     .contenido { padding: 15px; background: #fff; font-size: clamp(1rem, 3vw, 1.4rem); }
+    .contenido img, .contenido iframe, .contenido video { display: block; margin: 10px auto; max-width: 90%; }
     .contacto, .qr, .firma, .descargar { text-align: center; margin: 20px 0; }
     .redes-line { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
     .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
@@ -52,11 +53,22 @@
       if (datos.SECCIONES) {
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
-          const content = cuerpo.map(line => `<p>${line}</p>`).join('');
+          const content = cuerpo.map(line => {
+            if (/\.(jpg|jpeg|png|gif)$/i.test(line)) {
+              return `<img src="${line}" alt="Imagen Sección">`;
+            } else if (/youtu\.?be/.test(line)) {
+              const embedUrl = line.replace("watch?v=", "embed/");
+              return `<iframe width="560" height="315" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+            } else if (/\.mp4$/i.test(line)) {
+              return `<video controls src="${line}"></video>`;
+            } else {
+              return `<p>${line}</p>`;
+            }
+          }).join('');
           html += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
       }
-      if (datos.MAPA) html += `<div class="qr"><iframe src="${datos.MAPA}" width="90%" height="450" style="border:0;display:block;margin:0 auto;" allowfullscreen="" loading="lazy"></iframe></div>`;
+      if (datos.MAPA) html += `<div class="qr">${datos.MAPA}</div>`;
       if (datos.UBICACION) {
         html += `<div class="contacto ubicacion-line">
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
@@ -86,6 +98,9 @@
           }
         });
         html += `</div>`;
+      }
+      if (datos.LINK_QR) {
+        html += `<div class="qr"><h3>Escanea para acceder</h3><img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}' alt='QR'></div>`;
       }
       html += `<div class="descargar"><button>📥 Descargar Contacto</button></div>`;
       html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
