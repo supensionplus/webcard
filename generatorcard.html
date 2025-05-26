@@ -32,7 +32,7 @@
   <button id="btnGenerar" onclick="generarTarjeta()">🎨 Generar Tarjeta</button>
   <div id="vistaPrevia" style="margin-top:20px;"></div>
   <pre id="codigoGenerado" style="margin-top:20px;"></pre>
-  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código de Tarjeta</button>
+  <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
 
   <script>
     function generarTarjeta() {
@@ -53,11 +53,11 @@
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
           const content = cuerpo.map(line => {
-            if (/https?:\/\/.*\.(jpg|jpeg|png|gif)/i.test(line)) {
+            if (/https?:\/\/.+\.(jpg|jpeg|png|gif)/i.test(line)) {
               return `<img src="${line}" style="width:90%;display:block;margin:10px auto;">`;
-            } else if (/https?:\/\/(www\.)?youtube\.com|youtu\.be\//.test(line)) {
-              const videoId = line.includes('embed') ? line.split('embed/')[1] : line.split('v=')[1]?.split('&')[0];
-              return videoId ? `<iframe width="90%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="display:block;margin:10px auto;"></iframe>` : `<p>${line}</p>`;
+            } else if (/https?:\/\/.+(youtube\.com|youtu\.be)/i.test(line)) {
+              const videoId = line.split('v=')[1]?.split('&')[0] || line.split('/').pop();
+              return `<iframe width="90%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="display:block;margin:10px auto;"></iframe>`;
             }
             return `<p>${line}</p>`;
           }).join('');
@@ -66,55 +66,40 @@
       }
       if (datos.MAPA) {
         html += `<div class="qr" style="text-align:center;margin:20px 0;">
-                  <a href="${datos.MAPA}" target="_blank">
-                    <button>📍 Ver ubicación en Google Maps</button>
-                  </a>
-                </div>`;
+                    <a href="${datos.MAPA}" target="_blank">
+                      <button>📍 Ver ubicación en Google Maps</button>
+                    </a>
+                  </div>`;
       }
       if (datos.UBICACION) {
         html += `<div class="contacto ubicacion-line">
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
         </div>`;
       }
-      if (datos.REDES) {
-        const iconMap = {
-          Facebook: 'https://i.ibb.co/6JJ5FZ1S/IFbook.png',
-          Instagram: 'https://i.ibb.co/chCqtLkw/IInstagram.png',
-          Youtube: 'https://i.ibb.co/VYxJpn7X/IYoutube.png',
-          Whatsapp: 'https://i.ibb.co/bgnHxP1y/IWapp.png',
-          Tiktok: 'https://i.ibb.co/nsy5C1y9/ITiktok.png',
-          Twitter: 'https://i.ibb.co/FqfRcjkg/ITwitter.png',
-          Linkedin: 'https://i.ibb.co/G33VkpGb/ILinkedin.png'
-        };
-        html += `<div class="redes-line">`;
-        datos.REDES.split('\n').forEach(line => {
-          const [red, url] = line.split(':').map(v => v.trim());
-          const icon = iconMap[red];
-          if (icon) {
-            if (url) {
-              let href = red === 'Whatsapp' && !url.includes('http') ? `https://wa.me/${url}` : url;
-              html += `<a href="${href}" target="_blank"><img src="${icon}" alt="${red}"></a>`;
-            } else {
-              html += `<img src="${icon}" alt="${red}" title="Sin enlace">`;
-            }
-          }
-        });
-        html += `</div>`;
-      }
+      html += `<div class="redes-line">
+        <a href="https://www.facebook.com/cesarcano.asesor/" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com/supensionplus/" target="_blank"><img src="https://i.ibb.co/chCqtLkw/IInstagram.png" alt="Instagram"></a>
+        <a href="https://www.youtube.com/@cesarcano" target="_blank"><img src="https://i.ibb.co/VYxJpn7X/IYoutube.png" alt="Youtube"></a>
+        <a href="https://wa.me/573117715353" target="_blank"><img src="https://i.ibb.co/bgnHxP1y/IWapp.png" alt="Whatsapp"></a>
+        <img src="https://i.ibb.co/FqfRcjkg/ITwitter.png" alt="Twitter" title="Sin enlace">
+        <img src="https://i.ibb.co/G33VkpGb/ILinkedin.png" alt="Linkedin" title="Sin enlace">
+        <img src="https://i.ibb.co/nsy5C1y9/ITiktok.png" alt="TikTok" title="Sin enlace">
+      </div>`;
       if (datos.LINK_QR) {
         html += `<div class="qr" style="text-align:center;">
           <h3>Escanea para acceder</h3>
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
         </div>`;
       }
-      html += `<div class="descargar"><button onclick="descargarVCF('${datos.TITULO}', '${datos.UBICACION}')">📥 Descargar Contacto</button></div>`;
+      html += `<div class="descargar"><button>📥 Descargar Contacto</button></div>`;
       html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
+
       document.getElementById('vistaPrevia').innerHTML = html;
       const pre = document.getElementById('codigoGenerado');
-      pre.textContent = document.getElementById('vistaPrevia').innerHTML;
+      pre.textContent = html;
       pre.style.display = 'block';
       document.getElementById('btnCopiar').style.display = 'inline-block';
-      document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function() {
+      document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function () {
         if (this.open) document.querySelectorAll('details').forEach(o => { if (o !== this) o.removeAttribute('open'); });
       }));
     }
@@ -124,19 +109,6 @@
       navigator.clipboard.writeText(codigo.textContent)
         .then(() => alert('✅ Código copiado'))
         .catch(() => alert('❌ Error al copiar'));
-    }
-
-    function descargarVCF(nombre, datosUbicacion) {
-      const vcf = `BEGIN:VCARD\nVERSION:3.0\nFN:${nombre}\nNOTE:${datosUbicacion}\nEND:VCARD`;
-      const blob = new Blob([vcf], { type: 'text/vcard' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'contacto.vcf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     }
   </script>
 </body>
