@@ -43,40 +43,41 @@
         const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
         if (match) datos[match[1]] = match[2].trim();
       });
-      let html = '';
-      if (datos.PORTADA) html += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
-      if (datos.LOGO) html += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
-      if (datos.TITULO) html += `<h2>${datos.TITULO}</h2>`;
-      if (datos.DESCRIPCION) html += `<h3 class='descripcion'>${datos.DESCRIPCION}</h3>`;
-      if (datos.QUIENES_SOMOS) html += `<h3>${datos.QUIENES_SOMOS}</h3>`;
+
+      let bodyHTML = '';
+      if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
+      if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
+      if (datos.TITULO) bodyHTML += `<h2>${datos.TITULO}</h2>`;
+      if (datos.DESCRIPCION) bodyHTML += `<h3 class='descripcion'>${datos.DESCRIPCION}</h3>`;
+      if (datos.QUIENES_SOMOS) bodyHTML += `<h3>${datos.QUIENES_SOMOS}</h3>`;
       if (datos.SECCIONES) {
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
           const content = cuerpo.map(line => {
             if (/https?:\/\/.+\.(jpg|jpeg|png|gif)/i.test(line)) {
               return `<img src="${line}" style="width:90%;display:block;margin:10px auto;">`;
-            } else if (/https?:\/\/.+(youtube\.com|youtu\.be)/i.test(line)) {
+            } else if (/https?:\/\/(www\.)?(youtube\.com|youtu\.be)/i.test(line)) {
               const videoId = line.split('v=')[1]?.split('&')[0] || line.split('/').pop();
               return `<iframe width="90%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="display:block;margin:10px auto;"></iframe>`;
             }
             return `<p>${line}</p>`;
           }).join('');
-          html += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
+          bodyHTML += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
       }
       if (datos.MAPA) {
-        html += `<div class="qr" style="text-align:center;margin:20px 0;">
-                    <a href="${datos.MAPA}" target="_blank">
-                      <button>📍 Ver ubicación en Google Maps</button>
-                    </a>
-                  </div>`;
+        bodyHTML += `<div class="qr" style="text-align:center;margin:20px 0;">
+                      <a href="${datos.MAPA}" target="_blank">
+                        <button>📍 Ver ubicación en Google Maps</button>
+                      </a>
+                    </div>`;
       }
       if (datos.UBICACION) {
-        html += `<div class="contacto ubicacion-line">
+        bodyHTML += `<div class="contacto ubicacion-line">
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
         </div>`;
       }
-      html += `<div class="redes-line">
+      bodyHTML += `<div class="redes-line">
         <a href="https://www.facebook.com/cesarcano.asesor/" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="Facebook"></a>
         <a href="https://www.instagram.com/supensionplus/" target="_blank"><img src="https://i.ibb.co/chCqtLkw/IInstagram.png" alt="Instagram"></a>
         <a href="https://www.youtube.com/@cesarcano" target="_blank"><img src="https://i.ibb.co/VYxJpn7X/IYoutube.png" alt="Youtube"></a>
@@ -86,22 +87,65 @@
         <img src="https://i.ibb.co/nsy5C1y9/ITiktok.png" alt="TikTok" title="Sin enlace">
       </div>`;
       if (datos.LINK_QR) {
-        html += `<div class="qr" style="text-align:center;">
+        bodyHTML += `<div class="qr" style="text-align:center;">
           <h3>Escanea para acceder</h3>
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
         </div>`;
       }
+      bodyHTML += `<div class="descargar">
+        <button onclick="descargarVCF()">📥 Descargar Contacto</button>
+      </div>`;
+      bodyHTML += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
 
-html += `<div class="descargar">
-  <button onclick="descargarVCF()">📥 Descargar Contacto</button>
-</div>`;
+      document.getElementById('vistaPrevia').innerHTML = bodyHTML;
 
+const fullHTML = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjeta</title>
+  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
+  <style>${document.querySelector('style').textContent}</style>
+</head>
+<body>
+  ${bodyHTML}
+  <script>
+    function descargarVCF() {
+      const vcfData = \`BEGIN:VCARD
+VERSION:3.0
+FN:${datos.TITULO || 'Nombre'}
+ORG:${datos.DESCRIPCION || 'Organización'}
+TEL;TYPE=work,voice:${(datos.UBICACION?.match(/Tel1: ?([^\n]+)/) || [])[1] || ''}
+EMAIL:${(datos.UBICACION?.match(/Email: ?([^\n]+)/) || [])[1] || ''}
+ADR:${(datos.UBICACION?.match(/Dir 1: ?([^\n]+)/) || [])[1] || ''}
+END:VCARD\`;
+      const blob = new Blob([vcfData], { type: 'text/vcard' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'contacto.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
-      html += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
+    document.querySelectorAll('details').forEach(d => {
+      d.addEventListener('toggle', function () {
+        if (this.open) {
+          document.querySelectorAll('details').forEach(o => {
+            if (o !== this) o.removeAttribute('open');
+          });
+        }
+      });
+    });
+  <\/script>
+</body>
+</html>`;
 
-      document.getElementById('vistaPrevia').innerHTML = html;
       const pre = document.getElementById('codigoGenerado');
-      pre.textContent = html;
+      pre.textContent = fullHTML;
       pre.style.display = 'block';
       document.getElementById('btnCopiar').style.display = 'inline-block';
       document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function () {
@@ -117,64 +161,27 @@ html += `<div class="descargar">
     }
 
 function descargarVCF() {
-  const texto = document.getElementById('entradaDatos').value;
-  const datos = {};
-  texto.split(/\n(?=#)/).forEach(block => {
-    const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
-    if (match) datos[match[1]] = match[2].trim();
-  });
+  const nombre = document.querySelector('h2')?.textContent || 'Contacto';
+  const descripcion = document.querySelector('.descripcion')?.textContent || '';
+  const telMatch = document.querySelector('.ubicacion-line')?.textContent.match(/\+?\d{7,}/);
+  const tel = telMatch ? telMatch[0] : '';
+  const emailMatch = document.querySelector('.ubicacion-line')?.textContent.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const email = emailMatch ? emailMatch[0] : '';
 
-  const nombre = datos.TITULO || "Sin Nombre";
-  const titulo = datos.DESCRIPCION || "";
-  let telefono = "";
-  let email = "";
-  let direccion = "";
-  let ciudad = "";
-  let redes = [];
-
-  if (datos.UBICACION) {
-    const lineas = datos.UBICACION.split('\n');
-    lineas.forEach(linea => {
-      if (linea.includes('📍Dir 1:')) direccion = linea.split('📍Dir 1:')[1].trim();
-      if (linea.includes('📍Barrio:')) ciudad = linea.split('📍Barrio:')[1].trim();
-      if (linea.includes('📱Tel1:')) telefono = linea.split('📱Tel1:')[1].trim();
-      if (linea.includes('✉️ Email:')) email = linea.split('✉️ Email:')[1].trim();
-    });
-  }
-
-  if (datos.REDES) {
-    redes = datos.REDES.split('\n').filter(line => line.includes('http'));
-  }
-
-  let vcf = `BEGIN:VCARD
+  const vcf = `BEGIN:VCARD
 VERSION:3.0
 FN:${nombre}
-TITLE:${titulo}
-`;
-
-  if (telefono) vcf += `TEL;TYPE=CELL:${telefono}\n`;
-  if (email) vcf += `EMAIL:${email}\n`;
-  if (direccion || ciudad) {
-    // ADR: post-office;extended;street;locality;region;postal-code;country
-    vcf += `ADR:;;${direccion};${ciudad};;;;\n`;
-  }
-
-  if (redes.length) {
-    vcf += `NOTE:Redes sociales:\n`;
-    redes.forEach(r => vcf += `${r}\n`);
-  }
-
-  vcf += `END:VCARD`;
+ORG:${descripcion}
+TEL:${tel}
+EMAIL:${email}
+END:VCARD`;
 
   const blob = new Blob([vcf], { type: 'text/vcard' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'contacto.vcf';
-  a.click();
-  URL.revokeObjectURL(url);
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'contacto.vcf';
+  link.click();
 }
-
 
 
   </script>
