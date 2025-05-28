@@ -31,11 +31,12 @@ button:hover {
     h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); color: #555; margin: 6px 0; font-weight: 400; }
     .descripcion { font-size: clamp(1.1rem, 4vw, 1.4rem); color: #333; font-weight: 400; margin: 6px 0; }
 
-
-    
     details { margin: 4px 0; border-radius: 6px; overflow: hidden; }
     details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.2rem, 3.5vw, 1.6rem); cursor: pointer; font-weight: 600; }
-    .contenido { padding: 15px; background: #fff; font-size: clamp(1rem, 3vw, 1.4rem); }
+
+    .contenido, p {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    }
     .contacto, .qr, .firma, .descargar { text-align: center; margin: 20px 0; }
     .redes-line { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
     .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
@@ -113,7 +114,7 @@ details[open] .contenido {
       if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
       if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
       if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><h3 class='descripcion'>${datos.DESCRIPCION}</h3></div>`;
-      if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><h3>${datos.QUIENES_SOMOS}</h3></div>`;
+      if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><p>${datos.QUIENES_SOMOS}</p></div>`;
       if (datos.SECCIONES) {
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
