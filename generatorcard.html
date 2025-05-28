@@ -23,6 +23,17 @@
     .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
     .redes-line img:hover { transform: scale(1.1); }
     pre { background: #eee; padding: 15px; border-radius: 6px; white-space: pre-wrap; font-size: 1rem; display: none; height: auto; max-height: 10em; overflow: auto; }
+
+    .bloque {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 15px auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      max-width: 95%;
+    }
+
+    
   </style>
 </head>
 <body>
@@ -67,11 +78,11 @@
       });
 
       let bodyHTML = '';
-      if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
-      if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
-      if (datos.TITULO) bodyHTML += `<h2>${datos.TITULO}</h2>`;
-      if (datos.DESCRIPCION) bodyHTML += `<h3 class='descripcion'>${datos.DESCRIPCION}</h3>`;
-      if (datos.QUIENES_SOMOS) bodyHTML += `<h3>${datos.QUIENES_SOMOS}</h3>`;
+      if (datos.PORTADA) bodyHTML += `<div class="bloque"><img class="portada" src="${datos.PORTADA}" alt="Portada"></div>`;
+      if (datos.LOGO) bodyHTML += `<div class="bloque"><img class="logo" src="${datos.LOGO}" alt="Logo"></div>`;
+      if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
+      if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><h3 class='descripcion'>${datos.DESCRIPCION}</h3></div>`;
+      if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><h3>${datos.QUIENES_SOMOS}</h3></div>`;
       if (datos.SECCIONES) {
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
@@ -88,16 +99,16 @@
         });
       }
       if (datos.MAPA) {
-        bodyHTML += `<div class="qr" style="text-align:center;margin:20px 0;">
+        bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;margin:20px 0;">
                       <a href="${datos.MAPA}" target="_blank">
                         <button>📍 Ver ubicación en Google Maps</button>
                       </a>
-                    </div>`;
+                    </div></div>`;
       }
       if (datos.UBICACION) {
-        bodyHTML += `<div class="contacto ubicacion-line">
+        bodyHTML += `<div class="bloque"><div class="contacto ubicacion-line">
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
-        </div>`;
+        </div>`</div>;
       }
       bodyHTML += `<div class="redes-line">
         <a href="https://www.facebook.com/cesarcano.asesor/" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="Facebook"></a>
@@ -109,10 +120,10 @@
         <img src="https://i.ibb.co/nsy5C1y9/ITiktok.png" alt="TikTok" title="Sin enlace">
       </div>`;
       if (datos.LINK_QR) {
-        bodyHTML += `<div class="qr" style="text-align:center;">
+        bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;">
           <h3>Escanea para acceder</h3>
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
-        </div>`;
+        </div></div>`;
       }
       bodyHTML += `<div class="descargar">
         <button onclick="descargarVCF()">📥 Descargar Contacto</button>
