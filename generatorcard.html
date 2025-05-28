@@ -96,97 +96,80 @@ details[open] .contenido {
   <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
 
   <script>
-function generarTarjeta() {
-  const texto = document.getElementById('entradaDatos').value || '';
-  if (!texto.trim()) return alert('Por favor, pega el contenido.');
-  const datos = {};
+    function generarTarjeta() {
+      const texto = document.getElementById('entradaDatos').value || '';
+      if (!texto.trim()) return alert('Por favor, pega el contenido.');
+      const datos = {};
 
-  const colorBoton = document.getElementById('colorBoton').value;
-  const colorFondo = document.getElementById('colorFondo').value;
+      const colorBoton = document.getElementById('colorBoton').value;
+      const colorFondo = document.getElementById('colorFondo').value;
+      
+      texto.split(/\n(?=#)/).forEach(block => {
+        const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
+        if (match) datos[match[1]] = match[2].trim();
+      });
 
-  texto.split(/\n(?=#)/).forEach(block => {
-    const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
-    if (match) datos[match[1]] = match[2].trim();
-  });
+      let bodyHTML = '';
+      if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
+      if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
+      if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
+      if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><p class='descripcion' style="font-weight:600; text-align:center;">${datos.DESCRIPCION}</p></div>`;
+      if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><p style="text-align:center;">${datos.QUIENES_SOMOS}</p></div>`;
+      if (datos.SECCIONES) {
+        datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
+          const [titulo, ...cuerpo] = s.trim().split('\n');
+          const content = cuerpo.map(line => {
+            if (/https?:\/\/.+\.(jpg|jpeg|png|gif)/i.test(line)) {
+              return `<img src="${line}" style="width:90%;display:block;margin:10px auto;">`;
+            } else if (/https?:\/\/(www\.)?(youtube\.com|youtu\.be)/i.test(line)) {
+              const videoId = line.split('v=')[1]?.split('&')[0] || line.split('/').pop();
+              return `<iframe width="90%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="display:block;margin:10px auto;"></iframe>`;
+            }
+            return `<p>${line}</p>`;
+          }).join('');
+          bodyHTML += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
+        });
+      }
+      if (datos.MAPA) {
+        bodyHTML += `<div class="qr" style="text-align:center;margin:20px 0;">
+                      <a href="${datos.MAPA}" target="_blank">
+                        <button>📍 Ver ubicación en Google Maps</button>
+                      </a>
+                    </div>`;
+      }
+      if (datos.UBICACION) {
+        bodyHTML += `<div class="bloque"><div class="contacto ubicacion-line">
+          ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
+        </div></div>`
+      }
+      bodyHTML += `<div class="redes-line">
+        <a href="https://www.facebook.com/cesarcano.asesor/" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com/supensionplus/" target="_blank"><img src="https://i.ibb.co/chCqtLkw/IInstagram.png" alt="Instagram"></a>
+        <a href="https://www.youtube.com/@cesarcano" target="_blank"><img src="https://i.ibb.co/VYxJpn7X/IYoutube.png" alt="Youtube"></a>
+        <a href="https://wa.me/573117715353" target="_blank"><img src="https://i.ibb.co/bgnHxP1y/IWapp.png" alt="Whatsapp"></a>
+        <img src="https://i.ibb.co/FqfRcjkg/ITwitter.png" alt="Twitter" title="Sin enlace">
+        <img src="https://i.ibb.co/G33VkpGb/ILinkedin.png" alt="Linkedin" title="Sin enlace">
+        <img src="https://i.ibb.co/nsy5C1y9/ITiktok.png" alt="TikTok" title="Sin enlace">
+      </div>`;
+      if (datos.LINK_QR) {
+        bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;">
+          <h3>Escanea para acceder</h3>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
+        </div></div>`;
+      }
+      bodyHTML += `<div class="descargar">
+        <button onclick="descargarVCF()">📥 Descargar Contacto</button>
+      </div>`;
+      bodyHTML += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
 
-  let bodyHTML = '';
-  if (datos.PORTADA) bodyHTML += `<div class="bloque"><img class="portada" src="${datos.PORTADA}" alt="Portada"></div>`;
-  if (datos.LOGO) bodyHTML += `<div class="bloque"><img class="logo" src="${datos.LOGO}" alt="Logo"></div>`;
-  if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
-  if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><h3 class='descripcion'><strong>${datos.DESCRIPCION}</strong></h3></div>`;
-  if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><p style="text-align:center;">${datos.QUIENES_SOMOS}</p></div>`;
+      document.getElementById('vistaPrevia').innerHTML = bodyHTML;
+      document.body.style.background = colorFondo;
+      document.querySelectorAll('details summary').forEach(s => {
+      s.style.background = colorBoton;
+      });
 
-  if (datos.SECCIONES) {
-    datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
-      const [titulo, ...cuerpo] = s.trim().split('\n');
-      const content = cuerpo.map(line => {
-        if (/https?:\/\/.+\.(jpg|jpeg|png|gif)/i.test(line)) {
-          return `<img src="${line}" style="width:90%;display:block;margin:10px auto;">`;
-        } else if (/https?:\/\/(www\.)?(youtube\.com|youtu\.be)/i.test(line)) {
-          const videoId = line.split('v=')[1]?.split('&')[0] || line.split('/').pop();
-          return `<iframe width="90%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="display:block;margin:10px auto;"></iframe>`;
-        }
-        return `<p>${line}</p>`;
-      }).join('');
-      bodyHTML += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
-    });
-  }
 
-  if (datos.MAPA) {
-    bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;margin:20px 0;">
-      <a href="${datos.MAPA}" target="_blank"><button>📍 Ver ubicación en Google Maps</button></a>
-    </div></div>`;
-  }
-
-  if (datos.UBICACION) {
-    bodyHTML += `<div class="bloque"><div class="contacto ubicacion-line">
-      ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
-    </div></div>`;
-  }
-
-  // Redes sociales dinámicas
-  if (datos.REDES) {
-    const iconos = {
-      facebook: "https://i.ibb.co/6JJ5FZ1S/IFbook.png",
-      instagram: "https://i.ibb.co/chCqtLkw/IInstagram.png",
-      youtube: "https://i.ibb.co/VYxJpn7X/IYoutube.png",
-      whatsapp: "https://i.ibb.co/bgnHxP1y/IWapp.png",
-      twitter: "https://i.ibb.co/FqfRcjkg/ITwitter.png",
-      linkedin: "https://i.ibb.co/G33VkpGb/ILinkedin.png",
-      tiktok: "https://i.ibb.co/nsy5C1y9/ITiktok.png"
-    };
-
-    const redesHTML = [...new Set(datos.REDES.split('\n'))].map(url => {
-  const lower = url.toLowerCase();
-  const nombre = Object.keys(iconos).find(red => lower.includes(red));
-  if (nombre) {
-    return `<a href="${url}" target="_blank"><img src="${iconos[nombre]}" alt="${nombre}" title="${nombre.charAt(0).toUpperCase() + nombre.slice(1)}"></a>`;
-  }
-  return '';
-}).filter(Boolean).join('');
-
-    if (redesHTML) {
-      bodyHTML += `<div class="redes-line">${redesHTML}</div>`;
-    }
-  }
-
-  if (datos.LINK_QR) {
-    bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;">
-      <h3>Escanea para acceder</h3>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
-    </div></div>`;
-  }
-
-  bodyHTML += `<div class="descargar"><button onclick="descargarVCF()">📥 Descargar Contacto</button></div>`;
-  bodyHTML += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
-
-  document.getElementById('vistaPrevia').innerHTML = bodyHTML;
-  document.body.style.background = colorFondo;
-  document.querySelectorAll('details summary').forEach(s => {
-    s.style.background = colorBoton;
-  });
-
-  const fullHTML = `<!DOCTYPE html>
+const fullHTML = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -196,30 +179,35 @@ function generarTarjeta() {
   <style>
     ${document.querySelector('style').textContent}
     body { background: ${colorFondo}; }
-    details summary { background: ${colorBoton}; }
+    details summary {
+      background: ${colorBoton};
+    }
   </style>
 </head>
 <body>
   ${bodyHTML}
   <script>
     function descargarVCF() {
-      const vcfData = \`BEGIN:VCARD
+      const nombre = document.querySelector('h2')?.textContent || 'Contacto';
+      const descripcion = document.querySelector('.descripcion')?.textContent || '';
+      const telMatch = document.querySelector('.ubicacion-line')?.textContent.match(/\\+?\\d{7,}/);
+      const tel = telMatch ? telMatch[0] : '';
+      const emailMatch = document.querySelector('.ubicacion-line')?.textContent.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/);
+      const email = emailMatch ? emailMatch[0] : '';
+
+      const vcf = \`BEGIN:VCARD
 VERSION:3.0
-FN:${datos.TITULO || 'Nombre'}
-ORG:${datos.DESCRIPCION || 'Organización'}
-TEL;TYPE=work,voice:${(datos.UBICACION?.match(/Tel1: ?([^\n]+)/) || [])[1] || ''}
-EMAIL:${(datos.UBICACION?.match(/Email: ?([^\n]+)/) || [])[1] || ''}
-ADR:${(datos.UBICACION?.match(/Dir 1: ?([^\n]+)/) || [])[1] || ''}
+FN:\${nombre}
+ORG:\${descripcion}
+TEL:\${tel}
+EMAIL:\${email}
 END:VCARD\`;
-      const blob = new Blob([vcfData], { type: 'text/vcard' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'contacto.vcf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+
+      const blob = new Blob([vcf], { type: 'text/vcard' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'contacto.vcf';
+      link.click();
     }
 
     document.querySelectorAll('details').forEach(d => {
@@ -235,15 +223,15 @@ END:VCARD\`;
 </body>
 </html>`;
 
-  const pre = document.getElementById('codigoGenerado');
-  pre.textContent = fullHTML;
-  pre.style.display = 'block';
-  document.getElementById('btnCopiar').style.display = 'inline-block';
-  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function () {
-    if (this.open) document.querySelectorAll('details').forEach(o => { if (o !== this) o.removeAttribute('open'); });
-  }));
-}
 
+      const pre = document.getElementById('codigoGenerado');
+      pre.textContent = fullHTML;
+      pre.style.display = 'block';
+      document.getElementById('btnCopiar').style.display = 'inline-block';
+      document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', function () {
+        if (this.open) document.querySelectorAll('details').forEach(o => { if (o !== this) o.removeAttribute('open'); });
+      }));
+    }
 
     function copiarHTML() {
       const codigo = document.getElementById('codigoGenerado');
