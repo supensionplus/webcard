@@ -146,35 +146,37 @@ const fullHTML = `<!DOCTYPE html>
   <title>Tarjeta</title>
   <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
   <style>
-  ${document.querySelector('style').textContent}
-  body { background: ${colorFondo}; }
-  details summary {
-    background: ${colorBoton};
-  }
-</style>
-
+    ${document.querySelector('style').textContent}
+    body { background: ${colorFondo}; }
+    details summary {
+      background: ${colorBoton};
+    }
+  </style>
 </head>
 <body>
   ${bodyHTML}
   <script>
     function descargarVCF() {
-      const vcfData = \`BEGIN:VCARD
+      const nombre = document.querySelector('h2')?.textContent || 'Contacto';
+      const descripcion = document.querySelector('.descripcion')?.textContent || '';
+      const telMatch = document.querySelector('.ubicacion-line')?.textContent.match(/\\+?\\d{7,}/);
+      const tel = telMatch ? telMatch[0] : '';
+      const emailMatch = document.querySelector('.ubicacion-line')?.textContent.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/);
+      const email = emailMatch ? emailMatch[0] : '';
+
+      const vcf = \`BEGIN:VCARD
 VERSION:3.0
-FN:${datos.TITULO || 'Nombre'}
-ORG:${datos.DESCRIPCION || 'Organización'}
-TEL;TYPE=work,voice:${(datos.UBICACION?.match(/Tel1: ?([^\n]+)/) || [])[1] || ''}
-EMAIL:${(datos.UBICACION?.match(/Email: ?([^\n]+)/) || [])[1] || ''}
-ADR:${(datos.UBICACION?.match(/Dir 1: ?([^\n]+)/) || [])[1] || ''}
+FN:\${nombre}
+ORG:\${descripcion}
+TEL:\${tel}
+EMAIL:\${email}
 END:VCARD\`;
-      const blob = new Blob([vcfData], { type: 'text/vcard' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'contacto.vcf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+
+      const blob = new Blob([vcf], { type: 'text/vcard' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'contacto.vcf';
+      link.click();
     }
 
     document.querySelectorAll('details').forEach(d => {
@@ -186,9 +188,10 @@ END:VCARD\`;
         }
       });
     });
-  </script>
+  <\/script>
 </body>
 </html>`;
+
 
       const pre = document.getElementById('codigoGenerado');
       pre.textContent = fullHTML;
