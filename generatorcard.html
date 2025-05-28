@@ -32,6 +32,15 @@
 </p>
   <p></p>
   <p>Pega aquí tu contenido etiquetado (#PORTADA, #LOGO, #TITULO, etc.) y luego haz clic en Generar.</p>
+  
+  <div style="margin: 15px 0;">
+  <label for="colorBoton">🎨 Color de los botones de sección:</label>
+  <input type="color" id="colorBoton" value="#007bff" style="margin-right: 20px;">
+
+  <label for="colorFondo">🧾 Color de fondo de la tarjeta:</label>
+  <input type="color" id="colorFondo" value="#f4f8ff">
+  </div>
+
   <textarea id="entradaDatos" placeholder="#PORTADA:\n...\n#LOGO:\n...\n#TITULO:\n...\n#DESCRIPCION:\n...\n#SECCIONES:\n&&...\n#MAPA:\n...\n#UBICACION:\n...\n#REDES:\n...\n#LINK_QR:\n..."></textarea>
   <button id="btnGenerar" onclick="generarTarjeta()">🎨 Generar Tarjeta</button>
   <div id="vistaPrevia" style="margin-top:20px;"></div>
@@ -43,6 +52,10 @@
       const texto = document.getElementById('entradaDatos').value || '';
       if (!texto.trim()) return alert('Por favor, pega el contenido.');
       const datos = {};
+
+      const colorBoton = document.getElementById('colorBoton').value;
+      const colorFondo = document.getElementById('colorFondo').value;
+      
       texto.split(/\n(?=#)/).forEach(block => {
         const match = block.match(/^#(\w+):\s*([\s\S]*)$/);
         if (match) datos[match[1]] = match[2].trim();
@@ -102,6 +115,11 @@
       bodyHTML += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
 
       document.getElementById('vistaPrevia').innerHTML = bodyHTML;
+      document.body.style.background = colorFondo;
+      document.querySelectorAll('details summary').forEach(s => {
+      s.style.background = colorBoton;
+      });
+
 
 const fullHTML = `<!DOCTYPE html>
 <html lang="es">
@@ -110,7 +128,14 @@ const fullHTML = `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tarjeta</title>
   <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
-  <style>${document.querySelector('style').textContent}</style>
+  <style>
+  ${document.querySelector('style').textContent}
+  body { background: ${colorFondo}; }
+  details summary {
+    background: ${colorBoton};
+  }
+</style>
+
 </head>
 <body>
   ${bodyHTML}
