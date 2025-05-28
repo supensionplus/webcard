@@ -96,6 +96,8 @@ details[open] .contenido {
   <button id="btnCopiar" style="display:none;" onclick="copiarHTML()">📋 Copiar Código HTML</button>
 
   <script>
+
+
     function generarTarjeta() {
       const texto = document.getElementById('entradaDatos').value || '';
       if (!texto.trim()) return alert('Por favor, pega el contenido.');
@@ -142,15 +144,41 @@ details[open] .contenido {
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
         </div></div>`
       }
-      bodyHTML += `<div class="redes-line">
-        <a href="https://www.facebook.com/cesarcano.asesor/" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="Facebook"></a>
-        <a href="https://www.instagram.com/supensionplus/" target="_blank"><img src="https://i.ibb.co/chCqtLkw/IInstagram.png" alt="Instagram"></a>
-        <a href="https://www.youtube.com/@cesarcano" target="_blank"><img src="https://i.ibb.co/VYxJpn7X/IYoutube.png" alt="Youtube"></a>
-        <a href="https://wa.me/573117715353" target="_blank"><img src="https://i.ibb.co/bgnHxP1y/IWapp.png" alt="Whatsapp"></a>
-        <img src="https://i.ibb.co/FqfRcjkg/ITwitter.png" alt="Twitter" title="Sin enlace">
-        <img src="https://i.ibb.co/G33VkpGb/ILinkedin.png" alt="Linkedin" title="Sin enlace">
-        <img src="https://i.ibb.co/nsy5C1y9/ITiktok.png" alt="TikTok" title="Sin enlace">
-      </div>`;
+
+
+  if (datos.REDES) {
+    const iconos = {
+      facebook: "https://i.ibb.co/6JJ5FZ1S/IFbook.png",
+      instagram: "https://i.ibb.co/chCqtLkw/IInstagram.png",
+      youtube: "https://i.ibb.co/VYxJpn7X/IYoutube.png",
+      whatsapp: "https://i.ibb.co/bgnHxP1y/IWapp.png",
+      twitter: "https://i.ibb.co/FqfRcjkg/ITwitter.png",
+      linkedin: "https://i.ibb.co/G33VkpGb/ILinkedin.png",
+      tiktok: "https://i.ibb.co/nsy5C1y9/ITiktok.png"
+    };
+
+    const redesArray = datos.REDES.split('\n').map(line => line.trim()).filter(line => line !== '');
+    const redesHTML = [];
+
+    for (let i = 0; i < redesArray.length - 1; i++) {
+      const nombre = redesArray[i].replace(':', '').toLowerCase();
+      const valor = redesArray[i + 1];
+      if (iconos[nombre] && valor) {
+        let url = valor;
+        if (nombre === 'whatsapp' && !valor.startsWith('http')) {
+          url = `https://wa.me/${valor}`;
+        }
+        redesHTML.push(`<a href="${url}" target="_blank"><img src="${iconos[nombre]}" alt="${nombre}" title="${nombre.charAt(0).toUpperCase() + nombre.slice(1)}"></a>`);
+        i++; // Saltamos la siguiente línea que ya fue usada
+      }
+    }
+
+    if (redesHTML.length > 0) {
+      bodyHTML += `<div class="redes-line">${redesHTML.join('')}</div>`;
+    }
+  }
+
+
       if (datos.LINK_QR) {
         bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;">
           <h3>Escanea para acceder</h3>
