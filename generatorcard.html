@@ -142,15 +142,31 @@ details[open] .contenido {
           ${datos.UBICACION.split('\n').map(line => `<div>${line}</div>`).join('')}
         </div></div>`
       }
-      bodyHTML += `<div class="redes-line">
-        <a href="https://www.facebook.com/cesarcano.asesor/" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="Facebook"></a>
-        <a href="https://www.instagram.com/supensionplus/" target="_blank"><img src="https://i.ibb.co/chCqtLkw/IInstagram.png" alt="Instagram"></a>
-        <a href="https://www.youtube.com/@cesarcano" target="_blank"><img src="https://i.ibb.co/VYxJpn7X/IYoutube.png" alt="Youtube"></a>
-        <a href="https://wa.me/573117715353" target="_blank"><img src="https://i.ibb.co/bgnHxP1y/IWapp.png" alt="Whatsapp"></a>
-        <img src="https://i.ibb.co/FqfRcjkg/ITwitter.png" alt="Twitter" title="Sin enlace">
-        <img src="https://i.ibb.co/G33VkpGb/ILinkedin.png" alt="Linkedin" title="Sin enlace">
-        <img src="https://i.ibb.co/nsy5C1y9/ITiktok.png" alt="TikTok" title="Sin enlace">
-      </div>`;
+      if (datos.REDES) {
+  const iconos = {
+    facebook: "https://i.ibb.co/6JJ5FZ1S/IFbook.png",
+    instagram: "https://i.ibb.co/chCqtLkw/IInstagram.png",
+    youtube: "https://i.ibb.co/VYxJpn7X/IYoutube.png",
+    whatsapp: "https://i.ibb.co/bgnHxP1y/IWapp.png",
+    twitter: "https://i.ibb.co/FqfRcjkg/ITwitter.png",
+    linkedin: "https://i.ibb.co/G33VkpGb/ILinkedin.png",
+    tiktok: "https://i.ibb.co/nsy5C1y9/ITiktok.png"
+  };
+
+  const redesHTML = datos.REDES.split('\n').map(url => {
+    const lower = url.toLowerCase();
+    const nombre = Object.keys(iconos).find(red => lower.includes(red));
+    if (nombre) {
+      return `<a href="${url}" target="_blank"><img src="${iconos[nombre]}" alt="${nombre}"></a>`;
+    }
+    return '';
+  }).filter(Boolean).join('');
+
+  if (redesHTML) {
+    bodyHTML += `<div class="redes-line">${redesHTML}</div>`;
+  }
+}
+
       if (datos.LINK_QR) {
         bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;">
           <h3>Escanea para acceder</h3>
