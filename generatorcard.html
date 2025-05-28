@@ -113,8 +113,8 @@ details[open] .contenido {
       if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
       if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
       if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
-      if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><h3 class='descripcion'>${datos.DESCRIPCION}</h3></div>`;
-      if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><p>${datos.QUIENES_SOMOS}</p></div>`;
+      if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><p class='descripcion' style="font-weight:600; text-align:center;">${datos.DESCRIPCION}</p></div>`;
+      if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><p style="text-align:center;">${datos.QUIENES_SOMOS}</p></div>`;
       if (datos.SECCIONES) {
         datos.SECCIONES.split('&&').filter(s => s.trim()).forEach(s => {
           const [titulo, ...cuerpo] = s.trim().split('\n');
