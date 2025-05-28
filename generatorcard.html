@@ -156,14 +156,14 @@ function generarTarjeta() {
       tiktok: "https://i.ibb.co/nsy5C1y9/ITiktok.png"
     };
 
-    const redesHTML = datos.REDES.split('\n').map(url => {
-      const lower = url.toLowerCase();
-      const nombre = Object.keys(iconos).find(red => lower.includes(red));
-      if (nombre) {
-        return `<a href="${url}" target="_blank"><img src="${iconos[nombre]}" alt="${nombre}"></a>`;
-      }
-      return '';
-    }).filter(Boolean).join('');
+    const redesHTML = [...new Set(datos.REDES.split('\n'))].map(url => {
+  const lower = url.toLowerCase();
+  const nombre = Object.keys(iconos).find(red => lower.includes(red));
+  if (nombre) {
+    return `<a href="${url}" target="_blank"><img src="${iconos[nombre]}" alt="${nombre}" title="${nombre.charAt(0).toUpperCase() + nombre.slice(1)}"></a>`;
+  }
+  return '';
+}).filter(Boolean).join('');
 
     if (redesHTML) {
       bodyHTML += `<div class="redes-line">${redesHTML}</div>`;
