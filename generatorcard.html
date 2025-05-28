@@ -79,8 +79,8 @@
       });
 
       let bodyHTML = '';
-      if (datos.PORTADA) bodyHTML += `<div class="bloque"><img class="portada" src="${datos.PORTADA}" alt="Portada"></div>`;
-      if (datos.LOGO) bodyHTML += `<div class="bloque"><img class="logo" src="${datos.LOGO}" alt="Logo"></div>`;
+      if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
+      if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
       if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
       if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><h3 class='descripcion'>${datos.DESCRIPCION}</h3></div>`;
       if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><h3>${datos.QUIENES_SOMOS}</h3></div>`;
@@ -100,11 +100,11 @@
         });
       }
       if (datos.MAPA) {
-        bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;margin:20px 0;">
+        bodyHTML += `<div class="qr" style="text-align:center;margin:20px 0;">
                       <a href="${datos.MAPA}" target="_blank">
                         <button>📍 Ver ubicación en Google Maps</button>
                       </a>
-                    </div></div>`;
+                    </div>`;
       }
       if (datos.UBICACION) {
         bodyHTML += `<div class="bloque"><div class="contacto ubicacion-line">
