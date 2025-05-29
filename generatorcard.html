@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FolioPro Generator</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  
+  
   <style>
     body { font-family: 'Inter', sans-serif; background: #f4f8ff; margin: 0 auto; padding: 20px; max-width: 800px; font-size: clamp(1.2rem, 4vw, 1.6rem); line-height: 1.4; }
     textarea { width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: monospace; }
@@ -68,6 +71,31 @@ details[open] .contenido {
 }
 
 
+.galeria {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 12px;
+  padding: 10px;
+}
+.galeria img, .galeria iframe {
+  flex: 0 0 auto;
+  width: 90%;
+  max-width: 300px;
+  border-radius: 10px;
+  scroll-snap-align: center;
+}
+.galeria::-webkit-scrollbar {
+  height: 8px;
+}
+.galeria::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+
+
+    
     
   </style>
 </head>
@@ -135,6 +163,52 @@ details[open] .contenido {
           bodyHTML += `<details><summary>${titulo.trim()}</summary><div class="contenido">${content}</div></details>`;
         });
       }
+
+// Galería de Imágenes
+if (datos.IMAGENES) {
+  const imagenes = datos.IMAGENES.split('\n').filter(line => line.trim());
+  if (imagenes.length > 0) {
+    const galeriaImgs = imagenes.map(url => `<img src="${url}" alt="Imagen">`).join('');
+    bodyHTML += `
+      <div class="bloque">
+        <h3 style="text-align:center;">📷 Galería de Imágenes</h3>
+        <p style="text-align:center;">Desliza a la derecha o izquierda para ver todas las fotos</p>
+        <div class="galeria">${galeriaImgs}</div>
+      </div>`;
+  } else {
+    bodyHTML += `
+      <div class="bloque">
+        <h3 style="text-align:center;">📷 Galería de Imágenes</h3>
+        <p style="text-align:center;">No hay imágenes disponibles.</p>
+      </div>`;
+  }
+}
+
+// Galería de Videos
+if (datos.VIDEOS) {
+  const videos = datos.VIDEOS.split('\n').filter(line => line.trim());
+  if (videos.length > 0) {
+    const galeriaVids = videos.map(url => {
+      const videoId = url.includes('youtu')
+        ? (url.split('v=')[1]?.split('&')[0] || url.split('/').pop())
+        : null;
+      return videoId ? `<iframe width="300" height="180" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>` : '';
+    }).join('');
+    bodyHTML += `
+      <div class="bloque">
+        <h3 style="text-align:center;">🎥 Galería de Videos</h3>
+        <p style="text-align:center;">Desliza a la derecha o izquierda para ver todos los videos</p>
+        <div class="galeria">${galeriaVids}</div>
+      </div>`;
+  } else {
+    bodyHTML += `
+      <div class="bloque">
+        <h3 style="text-align:center;">🎥 Galería de Videos</h3>
+        <p style="text-align:center;">No hay videos disponibles.</p>
+      </div>`;
+  }
+}
+
       
       if (datos.MAPA) {
         bodyHTML += `
