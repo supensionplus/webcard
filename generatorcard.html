@@ -330,13 +330,20 @@ END:VCARD\`;
 
     document.querySelectorAll('details').forEach(d => {
       d.addEventListener('toggle', function () {
-        if (this.open) {
-          document.querySelectorAll('details').forEach(o => {
-            if (o !== this) o.removeAttribute('open');
-          });
-        }
-      });
-    });
+      if (this.open) {
+        // Cierra los demás
+      document.querySelectorAll('details').forEach(o => {
+        if (o !== this) o.removeAttribute('open');
+        });
+
+        // Hace scroll al inicio de la sección abierta
+        setTimeout(() => {
+        this.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  });
+});
+
   <\/script>
 </body>
 </html>`;
