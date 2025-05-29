@@ -35,9 +35,21 @@ button:hover {
     details { margin: 4px 0; border-radius: 6px; overflow: hidden; }
     details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.2rem, 3.5vw, 1.6rem); cursor: pointer; font-weight: 600; }
 
-    .contenido, p {
-    font-size: clamp(1rem, 3vw, 1.4rem);
+        
+    .contenido {
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      margin-top: 5px;
     }
+
+    p {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+    }
+
+    
     .contacto, .qr, .firma, .descargar { text-align: center; margin: 20px 0; }
     .redes-line { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
     .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
@@ -96,7 +108,7 @@ details[open] .contenido {
     
     
   
-    body { background: #99f5a4; }
+    body { background: #f4f8ff; }
     details summary {
       background: #007bff;
     }
@@ -159,13 +171,20 @@ END:VCARD`;
 
     document.querySelectorAll('details').forEach(d => {
       d.addEventListener('toggle', function () {
-        if (this.open) {
-          document.querySelectorAll('details').forEach(o => {
-            if (o !== this) o.removeAttribute('open');
-          });
-        }
-      });
-    });
+      if (this.open) {
+        // Cierra los demás
+      document.querySelectorAll('details').forEach(o => {
+        if (o !== this) o.removeAttribute('open');
+        });
+
+        // Hace scroll al inicio de la sección abierta
+        setTimeout(() => {
+        this.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  });
+});
+
   </script>
 </body>
 </html>
