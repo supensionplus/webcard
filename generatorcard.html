@@ -144,14 +144,15 @@ details[open] .contenido {
 
       let bodyHTML = '';
 
-        bodyHTML += `
-    <div style="text-align:center; font-size:0.9rem; color:#666; margin-bottom:10px;">
-      📲 <strong>FolioPro</strong> – Tu marca, tu historia, en un solo Portafolio Digital<br>
-      <a href="https://wa.me/573117715353" target="_blank" style="color:#4a90e2; text-decoration:none;">Contáctanos por WhatsApp</a>
-    </div>
-  `;
+      bodyHTML += `
+  <div style="text-align:center; font-size:0.9rem; background:#e0f0ff; padding:8px 12px; border-radius:8px; margin-bottom:12px;">
+    <a href="https://wa.me/573117715353" target="_blank" style="color:#007bff; text-decoration:none; font-weight:500;">
+      📲 FolioPro – Tu marca y tu historia en un Portafolio Digital
+    </a>
+  </div>
+`;
 
-     
+    
       if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
       if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
       if (datos.TITULO) bodyHTML += `<div class="bloque"><h2>${datos.TITULO}</h2></div>`;
