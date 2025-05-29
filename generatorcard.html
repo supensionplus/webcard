@@ -105,6 +105,34 @@ details[open] .contenido {
   border-radius: 4px;
 }
 
+/* Botón flotante y botones emergentes */
+.boton-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+}
+.boton-flotante img {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.boton-flotante img:hover {
+  transform: scale(1.1);
+}
+.botones-secundarios {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+}
+.botones-secundarios img {
+  width: 50px;
+  height: 50px;
+}
 
 
     
