@@ -142,11 +142,11 @@ details[open] .contenido {
 <body>
   
   <div style="text-align: center; margin-bottom: 15px;">
-  <h1>📲 FolioPro Generator</h1>
-  <p style="font-size: 1.4rem; color: #555; margin-top: -10px;">
-    <em>Tu marca, tu historia, en un solo folio digital</em>
-  </p>
-</div>
+    <h1>📲 FolioPro Generator</h1>
+    <p style="font-size: 1.4rem; color: #555; margin-top: -10px;">
+      <em>Tu marca, tu historia, en un solo folio digital</em>
+    </p>
+  </div>
 
   <p></p>
   <p>Pega aquí tu contenido etiquetado (#PORTADA, #LOGO, #TITULO, etc.) y luego haz clic en Generar.</p>
@@ -185,12 +185,12 @@ details[open] .contenido {
       let bodyHTML = '';
 
       bodyHTML += `
-  <div style="text-align:center; font-size:0.9rem; background:#e0f0ff; padding:8px 12px; border-radius:8px; margin-bottom:12px;">
-    <a href="https://wa.me/573117715353" target="_blank" style="color:#007bff; text-decoration:none; font-weight:500;">
-      📲 FolioPro – Tu marca y tu historia en un Portafolio Digital
-    </a>
-  </div>
-`;
+      <div style="text-align:center; font-size:0.9rem; background:#e0f0ff; padding:8px 12px; border-radius:8px; margin-bottom:12px;">
+        <a href="https://wa.me/573117715353" target="_blank" style="color:#007bff; text-decoration:none; font-weight:500;">
+          📲 FolioPro – Tu marca y tu historia en un Portafolio Digital
+        </a>
+      </div>
+      `;
 
     
       if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
@@ -321,6 +321,62 @@ if (datos.VIDEOS) {
       bodyHTML += `<div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>`;
 
       document.getElementById('vistaPrevia').innerHTML = bodyHTML;
+
+// Manejo del botón flotante
+let whatsappNumber = '';
+let whatsappMessage = '';
+let celularNumber = '';
+
+if (datos.BOTONFLOT) {
+  const lines = datos.BOTONFLOT.split('\n');
+  lines.forEach(line => {
+    if (line.toLowerCase().includes('whatsapp:')) {
+      whatsappNumber = line.split(':')[1]?.trim() || '';
+    } else if (line.toLowerCase().includes('whatsmensaje:')) {
+      whatsappMessage = line.split(':')[1]?.trim().replace(/^["']|["']$/g, '') || '';
+    } else if (line.toLowerCase().includes('celular:')) {
+      celularNumber = line.split(':')[1]?.trim() || '';
+    }
+  });
+}
+
+// Asignar funciones al DOM global
+window.mostrarBotones = () => {
+  document.getElementById('botonesSecundarios').style.display = 'flex';
+  document.getElementById('botonPrincipal').style.display = 'none';
+};
+
+window.ocultarBotones = () => {
+  document.getElementById('botonesSecundarios').style.display = 'none';
+  document.getElementById('botonPrincipal').style.display = 'block';
+};
+
+window.irWhatsapp = () => {
+  if (whatsappNumber) {
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(url, '_blank');
+    ocultarBotones();
+  } else {
+    alert('Número de WhatsApp no disponible');
+  }
+};
+
+window.llamarCelular = () => {
+  if (celularNumber) {
+    window.location.href = `tel:${celularNumber}`;
+    ocultarBotones();
+  } else {
+    alert('Número de celular no disponible');
+  }
+};
+
+
+
+
+
+
+
+      
       document.body.style.background = colorFondo;
       document.querySelectorAll('details summary').forEach(s => {
       s.style.background = colorBoton;
@@ -430,5 +486,20 @@ END:VCARD`;
 
 
   </script>
+
+
+<!-- Botón flotante principal y botones secundarios -->
+<div class="boton-flotante">
+  <img src="https://i.ibb.co/ccDm8TXZ/BoWapp.png" onclick="mostrarBotones()" alt="Botón flotante principal" id="botonPrincipal">
+  <div class="botones-secundarios" id="botonesSecundarios">
+    <img src="https://i.ibb.co/ccDm8TXZ/BoWapp.png" onclick="irWhatsapp()" alt="WhatsApp">
+    <img src="https://i.ibb.co/0pkdr3c6/Bot-Celular.png" onclick="llamarCelular()" alt="Llamar">
+    <img src="https://i.ibb.co/nNm1L2Dj/Bot-Cerrar.png" onclick="ocultarBotones()" alt="Cerrar">
+  </div>
+</div>
+
+
+
+  
 </body>
 </html>
