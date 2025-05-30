@@ -331,9 +331,10 @@ if (datos.VIDEOS) {
       if (datos.LINK_QR) {
         bodyHTML += `<div class="bloque"><div class="qr" style="text-align:center;">
           <h3>Escanea para acceder</h3>
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(datos.LINK_QR)}" alt="QR">
+          <img src="${datos.LINK_QR}" alt="Código QR" style="width: 150px; height: auto; border-radius: 12px;">
         </div></div>`;
       }
+
       bodyHTML += `<div class="descargar">
         <button onclick="descargarVCF()">📥 Descargar Contacto</button>
       </div>`;
