@@ -376,14 +376,14 @@ function toggleBotones() {
   sec.style.display = sec.style.display === "flex" ? "none" : "flex";
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  const datosTexto = \`${texto}\`;
-  const whatsMatch = datosTexto.match(/Whatsapp:\s*(\+?\d+)/i);
-  const mensajeMatch = datosTexto.match(/WhatsMensaje:\s*"(.*?)"/i);
-  const celMatch = datosTexto.match(/Celular:\s*(\+?\d+)/i);
+(function() {
+  const botonData = \`${datos.BOTONFLOT || ''}\`;
+  const telMatch = botonData.match(/Whatsapp:\s*(\+?\d+)/i);
+  const msgMatch = botonData.match(/WhatsMensaje:\s*"(.*?)"/i);
+  const celMatch = botonData.match(/Celular:\s*(\+?\d+)/i);
 
-  const telefono = whatsMatch ? whatsMatch[1] : '';
-  const mensaje = mensajeMatch ? encodeURIComponent(mensajeMatch[1]) : '';
+  const telefono = telMatch ? telMatch[1] : '';
+  const mensaje = msgMatch ? encodeURIComponent(msgMatch[1]) : '';
   const celular = celMatch ? celMatch[1] : '';
 
   document.getElementById("botonWhatsapp")?.addEventListener("click", function() {
@@ -392,6 +392,19 @@ document.addEventListener("DOMContentLoaded", function() {
       toggleBotones();
     }
   });
+
+  document.getElementById("botonCelular")?.addEventListener("click", function() {
+    if (celular) {
+      window.location.href = \`tel:\${celular}\`;
+      toggleBotones();
+    }
+  });
+
+  document.getElementById("botonCerrar")?.addEventListener("click", function() {
+    toggleBotones();
+  });
+})();
+
 
   document.getElementById("botonCelular")?.addEventListener("click", function() {
     if (celular) {
