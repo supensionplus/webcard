@@ -108,21 +108,24 @@ details[open] .contenido {
 
 .titulo-flotante {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #0d6efd; /* Color llamativo (azul elegante) */
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(145deg, #0d6efd, #0a58ca);
   color: white;
-  font-family: 'Georgia', serif; /* Letra elegante */
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-family: 'Georgia', serif;
+  font-size: clamp(1.2rem, 4vw, 1.4rem);
   font-weight: bold;
-  padding: 12px 20px;
+  padding: 14px 30px;
   text-align: center;
   z-index: 999;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  max-width: 90%;
 }
 body {
-  padding-top: 60px; /* Para que no se esconda el contenido debajo del título flotante */
+  padding-top: 80px;
 }
 
     
