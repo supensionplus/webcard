@@ -108,9 +108,9 @@ details[open] .contenido {
 
 .titulo-flotante {
   position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  width: 100%;
   background: linear-gradient(145deg, #0d6efd, #0a58ca);
   color: white;
   font-family: 'Georgia', serif;
@@ -119,16 +119,33 @@ details[open] .contenido {
   padding: 14px 30px;
   text-align: center;
   z-index: 999;
-  border-radius: 50px;
+  border-radius: 0 0 20px 20px; /* redondeado solo abajo */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
-  max-width: 90%;
 }
 body {
   padding-top: 80px;
 }
 
-    
+
+  .folio-footer {
+  position: fixed;
+  top: 60px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+  z-index: 998;
+}
+.folio-footer a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-style: italic;
+  transition: color 0.3s;
+}
+.folio-footer a:hover {
+  color: white;
+}
+
     
   </style>
 </head>
@@ -189,6 +206,13 @@ body {
       if (datos.PORTADA) bodyHTML += `<img class="portada" src="${datos.PORTADA}" alt="Portada">`;
       if (datos.LOGO) bodyHTML += `<img class="logo" src="${datos.LOGO}" alt="Logo">`;
       if (datos.TITULO) bodyHTML += `<div class="titulo-flotante">${datos.TITULO}</div>`;
+      bodyHTML += `<div class="folio-footer">
+      <a href="https://wa.me/573117715353" target="_blank" title="Escríbenos a FolioPro">
+        By FolioPro
+      </a>
+    </div>`;
+
+      
       if (datos.DESCRIPCION) bodyHTML += `<div class="bloque"><p class='descripcion' style="font-weight:600; text-align:center;">${datos.DESCRIPCION}</p></div>`;
       if (datos.QUIENES_SOMOS) bodyHTML += `<div class="bloque"><p style="text-align:center;">${datos.QUIENES_SOMOS}</p></div>`;
       if (datos.SECCIONES) {
