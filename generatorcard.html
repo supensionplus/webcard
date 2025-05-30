@@ -319,17 +319,58 @@ const fullHTML = `<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tarjeta</title>
-  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     ${document.querySelector('style').textContent}
     body { background: ${colorFondo}; }
-    details summary {
-      background: ${colorBoton};
+    details summary { background: ${colorBoton}; }
+
+    /* Botón flotante */
+    .boton-flotante {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .boton-flotante img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    .botones-secundarios {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .botones-secundarios img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
     }
   </style>
 </head>
 <body>
   ${bodyHTML}
+
+  <!-- Botón Flotante -->
+  <div class="boton-flotante">
+    <div class="botones-secundarios" id="botonesSecundarios">
+      <img src="https://i.ibb.co/ccDm8TXZ/BoWapp.png" id="botonWhatsapp" alt="Whatsapp">
+      <img src="https://i.ibb.co/0pkdr3c6/Bot-Celular.png" id="botonCelular" alt="Llamar">
+      <img src="https://i.ibb.co/nNm1L2Dj/Bot-Cerrar.png" id="botonCerrar" alt="Cerrar">
+    </div>
+    <img src="https://i.ibb.co/ccDm8TXZ/BoWapp.png" onclick="toggleBotones()" alt="Abrir Botones">
+  </div>
+
   <script>
     function descargarVCF() {
       const nombre = document.querySelector('h2')?.textContent || 'Contacto';
@@ -340,12 +381,12 @@ const fullHTML = `<!DOCTYPE html>
       const email = emailMatch ? emailMatch[0] : '';
 
       const vcf = \`BEGIN:VCARD
-      VERSION:3.0
-      FN:\${nombre}
-      ORG:\${descripcion}
-      TEL:\${tel}
-      EMAIL:\${email}
-      END:VCARD\`;
+VERSION:3.0
+FN:\${nombre}
+ORG:\${descripcion}
+TEL:\${tel}
+EMAIL:\${email}
+END:VCARD\`;
 
       const blob = new Blob([vcf], { type: 'text/vcard' });
       const link = document.createElement('a');
@@ -356,74 +397,55 @@ const fullHTML = `<!DOCTYPE html>
 
     document.querySelectorAll('details').forEach(d => {
       d.addEventListener('toggle', function () {
-      if (this.open) {
-        // Cierra los demás
-      document.querySelectorAll('details').forEach(o => {
-        if (o !== this) o.removeAttribute('open');
-        });
+        if (this.open) {
+          document.querySelectorAll('details').forEach(o => {
+            if (o !== this) o.removeAttribute('open');
+          });
+          setTimeout(() => {
+            this.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+        }
+      });
+    });
 
-        // Hace scroll al inicio de la sección abierta
-        setTimeout(() => {
-        this.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+    function toggleBotones() {
+      const contenedor = document.getElementById("botonesSecundarios");
+      contenedor.style.display = (contenedor.style.display === "flex") ? "none" : "flex";
     }
-  });
-});
 
-// Funcionalidad del botón flotante
-function toggleBotones() {
-  const sec = document.getElementById("botonesSecundarios");
-  sec.style.display = sec.style.display === "flex" ? "none" : "flex";
-}
+    // Extrae datos del bloque BOTONFLOT
+    (function() {
+      const botonData = \`${datos.BOTONFLOT || ''}\`;
+      const telMatch = botonData.match(/Whatsapp:\\s*(\\+?\\d+)/i);
+      const msgMatch = botonData.match(/WhatsMensaje:\\s*"([^"]+)"/i);
+      const celMatch = botonData.match(/Celular:\\s*(\\+?\\d+)/i);
 
-(function() {
-  const botonData = \`${datos.BOTONFLOT || ''}\`;
-  const telMatch = botonData.match(/Whatsapp:\s*(\+?\d+)/i);
-  const msgMatch = botonData.match(/WhatsMensaje:\s*"(.*?)"/i);
-  const celMatch = botonData.match(/Celular:\s*(\+?\d+)/i);
+      const telefono = telMatch ? telMatch[1] : '';
+      const mensaje = msgMatch ? encodeURIComponent(msgMatch[1]) : '';
+      const celular = celMatch ? celMatch[1] : '';
 
-  const telefono = telMatch ? telMatch[1] : '';
-  const mensaje = msgMatch ? encodeURIComponent(msgMatch[1]) : '';
-  const celular = celMatch ? celMatch[1] : '';
+      document.getElementById("botonWhatsapp")?.addEventListener("click", function() {
+        if (telefono) {
+          window.open(\`https://wa.me/\${telefono}?text=\${mensaje}\`, '_blank');
+          toggleBotones();
+        }
+      });
 
-  document.getElementById("botonWhatsapp")?.addEventListener("click", function() {
-    if (telefono) {
-      window.open(\`https://wa.me/\${telefono}?text=\${mensaje}\`, '_blank');
-      toggleBotones();
-    }
-  });
+      document.getElementById("botonCelular")?.addEventListener("click", function() {
+        if (celular) {
+          window.location.href = \`tel:\${celular}\`;
+          toggleBotones();
+        }
+      });
 
-  document.getElementById("botonCelular")?.addEventListener("click", function() {
-    if (celular) {
-      window.location.href = \`tel:\${celular}\`;
-      toggleBotones();
-    }
-  });
-
-  document.getElementById("botonCerrar")?.addEventListener("click", function() {
-    toggleBotones();
-  });
-})();
-
-
-  document.getElementById("botonCelular")?.addEventListener("click", function() {
-    if (celular) {
-      window.location.href = \`tel:\${celular}\`;
-      toggleBotones();
-    }
-  });
-
-  document.getElementById("botonCerrar")?.addEventListener("click", function() {
-    toggleBotones();
-  });
-});
-
-
-
-
+      document.getElementById("botonCerrar")?.addEventListener("click", function() {
+        toggleBotones();
+      });
+    })();
   <\/script>
 </body>
 </html>`;
+
 
 
       const pre = document.getElementById('codigoGenerado');
