@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjeta</title>
+  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap' rel='stylesheet'>
+  <style>
+    
+    body { font-family: 'Inter', sans-serif; background: #f4f8ff; margin: 0 auto; padding: 20px; max-width: 800px; font-size: clamp(1.2rem, 4vw, 1.6rem); line-height: 1.4; }
+    textarea { width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: monospace; }
+    
+button {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+button:hover {
+  background: #0056b3;
+}
+
+    .portada { width: 90%; display: block; margin: 0 auto 10px; border-radius: 8px; }
+    .logo { width: 15%; max-width: 120px; min-width: 60px; height: auto; border-radius: 50%; display: block; margin: -50px auto 10px; border: 4px solid #fff; background: #fff; }
+    h2, h3, .descripcion, .ubicacion-line, .redes-line { text-align: center; }
+    
+    h2 { font-size: clamp(1.3rem, 5vw, 1.6rem); color: #4a90e2; margin: 8px 0; }
+    h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); color: #555; margin: 6px 0; font-weight: 400; }
+    .descripcion { font-size: clamp(1.1rem, 4vw, 1.4rem); color: #333; font-weight: 400; margin: 6px 0; }
+
+    details { margin: 4px 0; border-radius: 6px; overflow: hidden; }
+    details summary { background: #007bff; color: #fff; padding: 15px; font-size: clamp(1.2rem, 3.5vw, 1.6rem); cursor: pointer; font-weight: 600; }
+
+        
+    .contenido {
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      margin-top: 5px;
+    }
+
+    p {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+    }
+
+    
+    .contacto, .qr, .firma, .descargar { text-align: center; margin: 20px 0; }
+    .redes-line { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .redes-line img { width: 48px; height: 48px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
+    .redes-line img:hover { transform: scale(1.1); }
+    pre { background: #eee; padding: 15px; border-radius: 6px; white-space: pre-wrap; font-size: 1rem; display: none; height: auto; max-height: 10em; overflow: auto; }
+
+    .bloque {
+  background: white;
+  border: 1px solid #ddd; /* Borde sutil visible en fondos blancos */
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+  max-width: 95%;
+  transition: box-shadow 0.3s ease, border 0.3s ease;
+}
+.bloque:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  border-color: #ccc; /* Sutil cambio al pasar el mouse */
+}
+
+
+details[open] .contenido {
+  animation: fadeIn 0.3s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+.galeria {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 12px;
+  padding: 10px;
+}
+.galeria img, .galeria iframe {
+  flex: 0 0 auto;
+  width: 90%;
+  max-width: 300px;
+  border-radius: 10px;
+  scroll-snap-align: center;
+}
+.galeria::-webkit-scrollbar {
+  height: 8px;
+}
+.galeria::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+
+.titulo-flotante {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(145deg, #0d6efd, #0a58ca);
+  color: white;
+  font-family: 'Georgia', serif;
+  font-size: clamp(1.2rem, 4vw, 1.4rem);
+  font-weight: bold;
+  padding: 14px 30px;
+  text-align: center;
+  z-index: 999;
+  border-radius: 0 0 20px 20px; /* redondeado solo abajo */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+body {
+  padding-top: 80px;
+}
+
+
+  .folio-footer {
+  position: fixed;
+  top: 60px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+  z-index: 998;
+}
+.folio-footer a {
+  color: #001f4d; /* Azul oscuro visible */
+  text-decoration: none;
+  font-weight: 600;
+  font-style: italic;
+  transition: color 0.3s;
+}
+.folio-footer a:hover {
+  color: white;
+}
+
+    
+  
+    body { background: #80adf9; }
+    details summary {
+      background: #007bff;
+    }
+  </style>
+</head>
+<body>
+  
+  <div style="text-align:center; font-size:0.9rem; background:#e0f0ff; padding:8px 12px; border-radius:8px; margin-bottom:12px;">
+    <a href="https://wa.me/573117715353" target="_blank" style="color:#007bff; text-decoration:none; font-weight:500;">
+      🚀 FolioPro – Tu marca y tu historia en un Portafolio Digital
+    </a>
+  </div>
+<img class="portada" src="
+https://www.negociodigital.com/wp-content/uploads/2020/03/business-team-celebrating-a-good-job-in-the-office-Y3VZMNL-1-1200x800.jpg
+" alt="Portada"><img class="logo" src="
+https://i.ibb.co/SXb3QZbx/logo.jpg
+" alt="Logo"><div class="titulo-flotante">
+MARATON DEL EXITO
+</div><div class="folio-footer">
+      <a href="https://wa.me/573117715353" target="_blank" title="Escríbenos a FolioPro">
+        🚀 By FolioPro
+      </a>
+      </div><div class="bloque"><h2>
+MARATON DEL EXITO
+</h2></div><div class="bloque"><p class='descripcion' style="font-weight:600; text-align:center;">
+La fuerza Imparable de las Ventas !!!
+</p></div><div class="bloque"><p style="text-align:center;">
+🌟 Solo los líderes audaces dominan el mercado.
+
+En un mundo cambiante, la visión, la estrategia y la innovación no son opcionales: son la clave del éxito.
+Maratón del Éxito es más que un evento: es una experiencia transformadora diseñada para empresarios, ejecutivos y emprendedores que quieren marcar la diferencia.
+Durante una jornada de alto impacto, descubrirás cómo aplicar IA, marketing de última generación, servicio al cliente de clase mundial y nuevas estrategias de ventas para llevar tu negocio al siguiente nivel.
+Este no es un evento para todos. Es para los que lideran el cambio.
+🚀 Las plazas son limitadas. No te quedes fuera.
+</p></div><details><summary>JUSTIFICACION</summary><div class="contenido"><img src="https://negociosyempresa.com/wp-content/uploads/2016/11/mujer-brazos-cruzados-equipo-de-trabajo-brazos-levantados.jpg" style="width:90%;display:block;margin:10px auto;"><p></p><p>En un entorno comercial donde el cambio es la única constante, las empresas y líderes que sobreviven no son los más grandes, sino los más ágiles, conectados y estratégicos. Hoy más que nunca, vender no es simplemente ofrecer un producto: es generar valor, anticiparse al mercado, integrar tecnología, liderar con visión y crear experiencias memorables.</p><p></p><p>La Maratón del Éxito nace como una experiencia transformadora, diseñada para brindar herramientas concretas y una visión de futuro a quienes desean dejar de reaccionar al mercado… y empezar a liderarlo.</p></div></details><details><summary>PARA QUIEN ES ESTE EVENTO</summary><div class="contenido"><img src="https://www.laprensagrafica.com/__export/1506356566048/sites/prensagrafica/img/2017/09/25/cxmo_ser_un_emprendedor_exitoso.jpg_423682103.jpg" style="width:90%;display:block;margin:10px auto;"><p></p><p>Este evento no es para todos.</p><p></p><p>Es para aquellos que están listos para dejar atrás la mediocridad, romper con lo obsoleto y entrar en la era de la venta estratégica, el liderazgo auténtico y la innovación aplicada.</p><p></p><p>Está dirigido a:</p><p></p><p>- Empresarios y fundadores que quieren escalar con visión.</p><p>- Ejecutivos comerciales que buscan liderar con datos y resultados.</p><p>- Emprendedores que desean vender más, mejor y con sentido.</p><p>- Gerentes de marketing, ventas y servicio que no aceptan estancarse.</p><p>- Equipos comerciales que necesitan nuevas herramientas para impactar.</p><p></p><p>Este evento es para los que eligen avanzar. No para los que se conforman.</p></div></details><details><summary>CONFERENCIA 1:DOMINA EL JUEGO DE LAS VENTAS CON INTELIGENCIA ARTIFICIALDescripción ampliada:</summary><div class="contenido"><img src="https://www.dialapplet.com/wp-content/uploads/2023/12/ia-en-ventas-call-center.jpg" style="width:90%;display:block;margin:10px auto;"><p></p><p>La inteligencia artificial ya está reescribiendo las reglas del juego comercial. En esta conferencia entenderás por qué la IA no es el futuro, sino el presente para vendedores y empresas que quieren escalar con eficiencia y precisión. Exploraremos cómo automatizar procesos sin perder el toque humano, cómo analizar datos para detectar oportunidades antes que la competencia y qué herramientas concretas puedes implementar desde ahora.</p><p></p><p>Eje temático: Innovación comercial – IA aplicada a ventas</p><p></p><p>Aprenderás a:</p><p>- Optimizar embudos y procesos con herramientas inteligentes</p><p>- Detectar y anticipar necesidades del cliente con analítica predictiva</p><p>- Convertirte en un vendedor aumentado: humano + tecnología</p></div></details><details><summary>CONFERENCIA 2: RELEVANCIA IMPARABLE: CÓMO ATRAER, CONECTAR Y VENDER EN UN MUNDO SATURADO</summary><div class="contenido"><img src="https://cdn.shopify.com/s/files/1/0229/0839/articles/clients.jpg" style="width:90%;display:block;margin:10px auto;"><p></p><p>Tus clientes están expuestos a más de 5.000 impactos diarios. ¿Cómo te aseguras de que tu mensaje no solo se vea, sino que importe? Esta conferencia te lleva a las nuevas reglas del marketing digital, donde la autenticidad, la estrategia de contenido y el enfoque multicanal no son opcionales, sino vitales. Aprenderás cómo posicionarte con fuerza, atraer audiencias correctas y convertir atención en ventas reales.</p><p></p><p>Eje temático: Marketing digital estratégico</p><p></p><p>Aprenderás a:</p><p>- Crear contenido y campañas que no se ignoran</p><p>- Diseñar una presencia digital que genera confianza y ventas</p><p>- Medir lo que realmente importa: conversión y fidelización</p></div></details><details><summary>CONFERENCIA 3: TRANSFORMA TU SERVICIO EN TU MEJOR ESTRATEGIA DE VENTAS</summary><div class="contenido"><img src="https://img.interempresas.net/fotos/2720361.png" style="width:90%;display:block;margin:10px auto;"><p></p><p>Los productos se copian. El precio se iguala. Pero la experiencia… esa no se olvida. Esta conferencia te mostrará cómo elevar el servicio al cliente a una herramienta de diferenciación brutal. Aprenderás a crear momentos inolvidables, a resolver de forma impecable y a convertir cada interacción en una oportunidad de fidelización y venta cruzada.</p><p></p><p>Eje temático: Experiencia del cliente y fidelización</p><p></p><p>Aprenderás a:</p><p>- Convertir cada punto de contacto en una oportunidad de venta</p><p>- Diseñar protocolos de servicio memorables</p><p>- Medir y mejorar la experiencia del cliente con visión estratégica</p></div></details><details><summary>CONFERENCIA 4: VENDER DESDE EL PODER HUMANO: HABILIDADES QUE NUNCA DEJARÁN DE IMPORTAR</summary><div class="contenido"><img src="https://bold.com.ec/wp-content/uploads/2021/06/arquetipos-caracteristicas-vendedor-exitoso.jpg" style="width:90%;display:block;margin:10px auto;"><p></p><p>Las plataformas cambian, las herramientas evolucionan, pero hay algo que ninguna máquina puede replicar: la conexión genuina, la influencia humana, la confianza. Esta conferencia es un viaje hacia el desarrollo del nuevo perfil de vendedor: más estratégico, más empático, más poderoso. Aprenderás a conectar con tus clientes desde la emoción, dominar la comunicación persuasiva y cerrar con integridad.</p><p></p><p>Eje temático: Desarrollo de talento comercial</p><p></p><p>Aprenderás a:</p><p>- Desarrollar habilidades clave para la venta de alto impacto</p><p>- Adaptarte al nuevo cliente sin perder tu esencia</p><p>- Usar tu autenticidad como tu mejor herramienta comercial</p></div></details><details><summary>CONFERENCIA 5: CONSTRUYE EQUIPOS COMERCIALES QUE ROMPEN LÍMITES</summary><div class="contenido"><img src="https://www.ventasdealtooctanaje.com/wp-content/uploads/2023/06/motivar-al-equipo-de-ventas.jpg" style="width:90%;display:block;margin:10px auto;"><p></p><p>No basta con tener buenos productos: necesitas un equipo que los haga imparables. En esta conferencia descubrirás cómo liderar, formar y escalar equipos de ventas enfocados en resultados y en mejora continua. Verás modelos de liderazgo comercial que funcionan, cómo empoderar con propósito y cómo crear una cultura comercial que impulsa crecimiento real.</p><p></p><p>Eje temático: Liderazgo y gestión comercial</p><p></p><p>Aprenderás a:</p><p>- Detectar y potenciar talentos dentro del equipo</p><p>- Establecer indicadores claros de desempeño y mejora</p><p>- Liderar con visión, cultura y accountability</p></div></details><details><summary>TU DECIDES: SEGUIR IGUAL O MARCAR LA DIFERENCIA</summary><div class="contenido"><img src="https://www.hubspot.com/hubfs/media/fuerzaventas.jpeg" style="width:90%;display:block;margin:10px auto;"><p></p><p>Tú decides: seguir igual o marcar la diferencia</p><p></p><p>Este es el momento de tomar una decisión:</p><p>¿Seguir vendiendo como siempre o convertirte en la fuerza que lidera las ventas del futuro?</p><p></p><p>La Maratón del Éxito no es un evento más. Es el evento.</p><p>Una jornada intensa, transformadora y exclusiva para quienes no se conforman con lo mismo.</p><p></p><p>🎟️ Cupos limitados. Reserva tu lugar hoy.</p><p>No te quedes fuera de la experiencia que marcará un antes y un después en tu visión comercial.</p><p></p><p>👇</p><p>[Reserva tu entrada ahora]</p></div></details>
+      <div class="bloque">
+        <h3 style="text-align:center;">📷 Galería de Imágenes</h3>
+        <p style="text-align:center;">Desliza a la derecha o izquierda para ver todas las fotos</p>
+        <div class="galeria"><img src="https://www.overlap.net/co/wp-content/uploads/sites/5/2024/06/Como-Liderar-un-Equipo-de-Ventas-Exitoso.png" alt="Imagen"><img src="https://stockagile.com/wp-content/uploads/2022/07/iStock-1092645806.jpg" alt="Imagen"><img src="https://www.triario.co/hubfs/blog-files/Blog%20-%20Estrategias%20de%20contenido/destacada.png" alt="Imagen"></div>
+      </div>
+      <div class="bloque">
+        <h3 style="text-align:center;">🎥 Galería de Videos</h3>
+        <p style="text-align:center;">Desliza a la derecha o izquierda para ver todos los videos</p>
+        <div class="galeria"><iframe width="300" height="180" src="https://www.youtube.com/embed/p4X_YCHjgSA" frameborder="0" allowfullscreen></iframe><iframe width="300" height="180" src="https://www.youtube.com/embed/aWY1xdPkt6s" frameborder="0" allowfullscreen></iframe><iframe width="300" height="180" src="https://www.youtube.com/embed/26qztvKNcyA" frameborder="0" allowfullscreen></iframe><iframe width="300" height="180" src="https://www.youtube.com/embed/fVJWGwWI5TY" frameborder="0" allowfullscreen></iframe><iframe width="300" height="180" src="https://www.youtube.com/embed/zuQtpa8RspY" frameborder="0" allowfullscreen></iframe></div>
+      </div>
+          <div class="bloque">
+            <div class="mapa" style="text-align:center;">
+              <iframe src="
+https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d53491.77239339044!2d-75.71727717621333!3d4.804407779145724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sco!4v1749078205965!5m2!1ses-419!2sco
+" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div><div class="bloque"><div class="contacto ubicacion-line">
+          <div></div><div>📍Eje Cafetero de Colombia</div><div>📍Pereira, Armenia, Manizales</div><div>✉️ Email: Todospodemos2013@hotmail.es</div><div></div>
+        </div></div><div class="redes-line"><a href="https://www.facebook.com/CompaniaCidems" target="_blank"><img src="https://i.ibb.co/6JJ5FZ1S/IFbook.png" alt="facebook" title="Facebook"></a><a href="https://www.instagram.com/compania_cidems/" target="_blank"><img src="https://i.ibb.co/chCqtLkw/IInstagram.png" alt="instagram" title="Instagram"></a><a href="https://www.youtube.com/@cidemscompania2798" target="_blank"><img src="https://i.ibb.co/VYxJpn7X/IYoutube.png" alt="youtube" title="Youtube"></a><a href="https://wa.me/573145679454" target="_blank"><img src="https://i.ibb.co/bgnHxP1y/IWapp.png" alt="whatsapp" title="Whatsapp"></a></div><div class="bloque"><div class="qr" style="text-align:center;">
+          <h3>Escanea para acceder</h3>
+          <img src="
+https://i.ibb.co/nN6Q0qjQ/QR-Jorge-Pardo.png
+
+" alt="Código QR" style="width: 150px; height: auto; border-radius: 12px;">
+        </div></div><div class="descargar">
+        <button onclick="descargarVCF()">📥 Descargar Contacto</button>
+      </div><div class="firma"><p>Desarrollado por <a href='https://wa.me/573117715353'>SupensionPlus</a></p></div>
+  <script>
+
+
+
+    function descargarVCF() {
+      const nombre = document.querySelector('h2')?.textContent || 'Contacto';
+      const descripcion = document.querySelector('.descripcion')?.textContent || '';
+      const telMatch = document.querySelector('.ubicacion-line')?.textContent.match(/\+?\d{7,}/);
+      const tel = telMatch ? telMatch[0] : '';
+      const emailMatch = document.querySelector('.ubicacion-line')?.textContent.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+      const email = emailMatch ? emailMatch[0] : '';
+
+      const vcf = `BEGIN:VCARD
+VERSION:3.0
+FN:${nombre}
+ORG:${descripcion}
+TEL:${tel}
+EMAIL:${email}
+END:VCARD`;
+
+      const blob = new Blob([vcf], { type: 'text/vcard' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'contacto.vcf';
+      link.click();
+    }
+
+    document.querySelectorAll('details').forEach(d => {
+      d.addEventListener('toggle', function () {
+      if (this.open) {
+        // Cierra los demás
+      document.querySelectorAll('details').forEach(o => {
+        if (o !== this) o.removeAttribute('open');
+        });
+
+        // Hace scroll al inicio de la sección abierta
+        setTimeout(() => {
+        this.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  });
+});
+
+  </script>
+</body>
+</html>
