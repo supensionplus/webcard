@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supension Plus - Presentación</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fb;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px 0;
+    }
+
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .gallery img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+        transform: scale(1.03);
+    }
+
+    @media (max-width: 600px) {
+        .gallery {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="gallery">
+        <img src="https://i.ibb.co/mCGR0P1s/im02.jpg">
+        <img src="https://i.ibb.co/qLfWD73m/im03.jpg">
+        <img src="https://i.ibb.co/x85rcz8k/im04.jpg">
+        <img src="https://i.ibb.co/VW456njF/im05.jpg">
+        <img src="https://i.ibb.co/N2F7LHH9/im06.jpg">
+        <img src="https://i.ibb.co/CK95mJs9/im07.jpg">
+        <img src="https://i.ibb.co/ZRZZSKSt/im01.jpg">
+    </div>
+</div>
+
+</body>
+</html>
